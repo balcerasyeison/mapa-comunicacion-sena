@@ -1,0 +1,299 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1150" width="100%" height="100%" style="background-color: #0b1120; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="grad-central" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="grad-styles" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <linearGradient id="grad-problem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#b91c1c" />
+    </linearGradient>
+    <linearGradient id="grad-solution" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#16a34a" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <!-- Drop Shadows -->
+    <filter id="shadow-main" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    <filter id="glow-emerald" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#10b981" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Arrow Markers -->
+    <marker id="arrow-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#f87171"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background Grid -->
+  <g opacity="0.08">
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#ffffff" />
+    </pattern>
+    <rect width="100%" height="100%" fill="url(#grid)" />
+  </g>
+
+  <!-- HEADER BANNER -->
+  <g transform="translate(60, 45)">
+    <rect x="0" y="0" width="1680" height="70" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1" filter="url(#shadow-main)"/>
+    
+    <!-- SENA Badge -->
+    <rect x="25" y="18" width="110" height="34" rx="8" fill="#14532d" stroke="#22c55e" stroke-width="1"/>
+    <text x="80" y="40" fill="#86efac" font-size="13" font-weight="bold" text-anchor="middle">SENA ADSO</text>
+    
+    <!-- Title -->
+    <text x="155" y="38" fill="#f8fafc" font-size="19" font-weight="bold">MAPA CONCEPTUAL: ESTILOS DE COMUNICACIÓN EN PROYECTOS DE SOFTWARE</text>
+    <text x="155" y="56" fill="#94a3b8" font-size="12">Caso de Estudio: Sector Logística · Diagnóstico Integral, Consecuencias y 4 Acciones de Mejora</text>
+  </g>
+
+  <!-- ==================== CONNECTING PATHS ==================== -->
+  <g fill="none" stroke-width="2.5" opacity="0.9">
+    <!-- Central to Branch 1 (Styles) -->
+    <path d="M 310 570 C 400 570, 420 260, 500 260" stroke="#38bdf8" marker-end="url(#arrow-sky)"/>
+    <!-- Central to Branch 2 (Problems) -->
+    <path d="M 310 610 C 400 610, 420 610, 500 610" stroke="#f87171" marker-end="url(#arrow-red)"/>
+    <!-- Central to Branch 3 (Solutions) -->
+    <path d="M 310 650 C 400 650, 420 950, 500 950" stroke="#34d399" marker-end="url(#arrow-green)"/>
+
+    <!-- Branch 1 to 4 Styles -->
+    <path d="M 740 230 C 800 230, 820 120, 880 120" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-slate)"/>
+    <path d="M 740 250 C 800 250, 820 210, 880 210" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrow-slate)"/>
+    <path d="M 740 270 C 800 270, 820 300, 880 300" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-slate)"/>
+    <path d="M 740 290 C 800 290, 820 390, 880 390" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrow-slate)"/>
+
+    <!-- 4 Styles to Details Cards -->
+    <path d="M 1150 120 L 1230 120" stroke="#06b6d4" stroke-width="1.5" marker-end="url(#arrow-slate)"/>
+    <path d="M 1150 210 L 1230 210" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#arrow-slate)"/>
+    <path d="M 1150 300 L 1230 300" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-slate)"/>
+    <path d="M 1150 390 L 1230 390" stroke="#f43f5e" stroke-width="1.5" marker-end="url(#arrow-slate)"/>
+
+    <!-- Branch 2 (Problems) to 3 Cards -->
+    <path d="M 740 590 C 800 590, 820 520, 880 520" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+    <path d="M 740 610 L 880 610" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+    <path d="M 740 630 C 800 630, 820 700, 880 700" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+
+    <!-- Branch 3 (Solutions) to 4 Actions -->
+    <path d="M 740 920 C 800 920, 820 810, 880 810" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+    <path d="M 740 940 C 800 940, 820 900, 880 900" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+    <path d="M 740 960 C 800 960, 820 990, 880 990" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+    <path d="M 740 980 C 800 980, 820 1080, 880 1080" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+    <!-- Actions to Operational Details -->
+    <path d="M 1190 810 L 1250 810" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+    <path d="M 1190 900 L 1250 900" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+    <path d="M 1190 990 L 1250 990" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+    <path d="M 1190 1080 L 1250 1080" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  </g>
+
+  <!-- ==================== LINKING WORDS / LABELS ==================== -->
+  <g font-size="11" font-weight="600" text-anchor="middle">
+    <!-- Main link words -->
+    <rect x="365" y="380" width="90" height="22" rx="6" fill="#0f172a" stroke="#0284c7" stroke-width="1"/>
+    <text x="410" y="395" fill="#38bdf8">(se divide en)</text>
+
+    <rect x="375" y="599" width="70" height="22" rx="6" fill="#0f172a" stroke="#dc2626" stroke-width="1"/>
+    <text x="410" y="614" fill="#f87171">(genera)</text>
+
+    <rect x="370" y="790" width="80" height="22" rx="6" fill="#0f172a" stroke="#16a34a" stroke-width="1"/>
+    <text x="410" y="805" fill="#4ade80">(requiere)</text>
+
+    <!-- Branch 1 connectors -->
+    <text x="785" y="160" fill="#67e8f9">1.</text>
+    <text x="785" y="222" fill="#c084fc">2.</text>
+    <text x="785" y="295" fill="#fcd34d">3.</text>
+    <text x="785" y="355" fill="#fda4af">4.</text>
+
+    <!-- Branch 3 connectors -->
+    <text x="780" y="855" fill="#86efac">Acción 1</text>
+    <text x="780" y="915" fill="#86efac">Acción 2</text>
+    <text x="780" y="985" fill="#86efac">Acción 3</text>
+    <text x="780" y="1045" fill="#86efac">Acción 4</text>
+  </g>
+
+  <!-- ==================== NODES / CARDS ==================== -->
+
+  <!-- NODO CENTRAL -->
+  <g transform="translate(60, 545)" filter="url(#glow-emerald)">
+    <rect x="0" y="0" width="250" height="130" rx="18" fill="url(#grad-central)" stroke="#34d399" stroke-width="2"/>
+    <text x="125" y="38" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">COMUNICACIÓN EN EL</text>
+    <text x="125" y="58" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">PROYECTO DE SOFTWARE</text>
+    <line x1="30" y1="72" x2="220" y2="72" stroke="#6ee7b7" stroke-width="1" opacity="0.6"/>
+    <rect x="55" y="82" width="140" height="26" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1"/>
+    <text x="125" y="99" fill="#a7f3d0" font-size="12" font-weight="600" text-anchor="middle">Caso Sector Logística</text>
+  </g>
+
+  <!-- RAMA 1: ESTILOS PRESENTES -->
+  <g transform="translate(500, 215)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="240" height="90" rx="16" fill="url(#grad-styles)" stroke="#38bdf8" stroke-width="2"/>
+    <text x="120" y="38" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">ESTILOS DE COMUNICACIÓN</text>
+    <text x="120" y="58" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">PRESENTES (4 ROLES)</text>
+    <text x="120" y="78" fill="#bae6fd" font-size="11" text-anchor="middle">Diagnóstico de Canales Actuales</text>
+  </g>
+
+  <!-- RAMA 2: CONSECUENCIAS (EL PROBLEMA) -->
+  <g transform="translate(500, 565)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="240" height="90" rx="16" fill="url(#grad-problem)" stroke="#f87171" stroke-width="2"/>
+    <text x="120" y="38" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">CONSECUENCIAS ACTUALES</text>
+    <text x="120" y="58" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">(EL PROBLEMA)</text>
+    <text x="120" y="78" fill="#fecaca" font-size="11" text-anchor="middle">Impacto Negativo en el Proyecto</text>
+  </g>
+
+  <!-- RAMA 3: ACCIONES DE MEJORA (LA SOLUCIÓN) -->
+  <g transform="translate(500, 905)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="240" height="90" rx="16" fill="url(#grad-solution)" stroke="#4ade80" stroke-width="2"/>
+    <text x="120" y="38" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">ACCIONES DE MEJORA</text>
+    <text x="120" y="58" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">(LA SOLUCIÓN)</text>
+    <text x="120" y="78" fill="#bbf7d0" font-size="11" text-anchor="middle">Plan Estratégico de Transformación</text>
+  </g>
+
+  <!-- ==================== SUB-RAMA 1: 4 ESTILOS ==================== -->
+  
+  <!-- Estilo 1: Ágil -->
+  <g transform="translate(880, 85)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="270" height="70" rx="12" fill="#083344" stroke="#06b6d4" stroke-width="1.5"/>
+    <text x="15" y="28" fill="#67e8f9" font-size="13" font-weight="bold">1. Estilo Ágil (Scrum)</text>
+    <text x="15" y="46" fill="#e2e8f0" font-size="11">Rol: Ingenieros de Software</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="10">Canal: Daily Meetings / Verbal / Videollamada</text>
+  </g>
+  <g transform="translate(1230, 85)">
+    <rect x="0" y="0" width="490" height="70" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="15" y="26" fill="#4ade80" font-size="11" font-weight="bold">✔ Ventaja: Sincronización diaria rápida y detección temprana de bloqueos.</text>
+    <text x="15" y="48" fill="#f87171" font-size="11" font-weight="bold">✖ Falla: Directivos no asisten; genera choque cultural y falta de visibilidad.</text>
+  </g>
+
+  <!-- Estilo 2: Colaborativo -->
+  <g transform="translate(880, 175)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="270" height="70" rx="12" fill="#2e1065" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="15" y="28" fill="#c084fc" font-size="13" font-weight="bold">2. Estilo Colaborativo</text>
+    <text x="15" y="46" fill="#e2e8f0" font-size="11">Rol: Desarrolladores</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="10">Canales: GitHub + Trello (Pull Requests / Kanban)</text>
+  </g>
+  <g transform="translate(1230, 175)">
+    <rect x="0" y="0" width="490" height="70" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="15" y="26" fill="#4ade80" font-size="11" font-weight="bold">✔ Ventaja: Centralización del código y trabajo asíncrono ordenado.</text>
+    <text x="15" y="48" fill="#f87171" font-size="11" font-weight="bold">✖ Falla: Silos técnicos aislados; directivos y analistas no usan GitHub.</text>
+  </g>
+
+  <!-- Estilo 3: Jerárquico -->
+  <g transform="translate(880, 265)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="270" height="70" rx="12" fill="#451a03" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="15" y="28" fill="#fcd34d" font-size="13" font-weight="bold">3. Estilo Jerárquico Tradicional</text>
+    <text x="15" y="46" fill="#e2e8f0" font-size="11">Rol: Directivos y Analistas</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="10">Canales: Correo Electrónico / Reportes PDF formales</text>
+  </g>
+  <g transform="translate(1230, 265)">
+    <rect x="0" y="0" width="490" height="70" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="15" y="26" fill="#4ade80" font-size="11" font-weight="bold">✔ Ventaja: Respaldo formal, auditoría y control de contratos.</text>
+    <text x="15" y="48" fill="#f87171" font-size="11" font-weight="bold">✖ Falla: Lento, burocrático y desfasado con el ritmo del código.</text>
+  </g>
+
+  <!-- Estilo 4: Informal -->
+  <g transform="translate(880, 355)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="270" height="70" rx="12" fill="#4c0519" stroke="#f43f5e" stroke-width="1.5"/>
+    <text x="15" y="28" fill="#fda4af" font-size="13" font-weight="bold">4. Informal / Desestructurada</text>
+    <text x="15" y="46" fill="#e2e8f0" font-size="11">Rol: Técnicos de Soporte en Campo</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="10">Canal: WhatsApp (Mensajería instantánea)</text>
+  </g>
+  <g transform="translate(1230, 355)">
+    <rect x="0" y="0" width="490" height="70" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="15" y="26" fill="#4ade80" font-size="11" font-weight="bold">✔ Ventaja: Inmediatez y reporte directo desde terreno/camiones.</text>
+    <text x="15" y="48" fill="#f87171" font-size="11" font-weight="bold">✖ Falla: Pérdida crítica de incidentes, reportes duplicados y cero rastreo.</text>
+  </g>
+
+  <!-- ==================== RAMA 2: 3 CONSECUENCIAS ==================== -->
+  
+  <g transform="translate(880, 485)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="840" height="65" rx="12" fill="#1e1b4b" stroke="#f87171" stroke-width="1"/>
+    <circle cx="30" cy="32" r="14" fill="#dc2626"/>
+    <text x="30" y="37" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">1</text>
+    <text x="60" y="28" fill="#fca5a5" font-size="13" font-weight="bold">Impacto en Cronograma: Retrasos en la Entrega de Módulos Clave</text>
+    <text x="60" y="48" fill="#cbd5e1" font-size="11">Requerimientos cambiaban por correo sin registrarse en los sprints, generando reprocesos continuos.</text>
+  </g>
+
+  <g transform="translate(880, 575)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="840" height="65" rx="12" fill="#1e1b4b" stroke="#f87171" stroke-width="1"/>
+    <circle cx="30" cy="32" r="14" fill="#dc2626"/>
+    <text x="30" y="37" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">2</text>
+    <text x="60" y="28" fill="#fca5a5" font-size="13" font-weight="bold">Impacto en Clima Laboral: Frustración Continua (Devs vs. Directivos)</text>
+    <text x="60" y="48" fill="#cbd5e1" font-size="11">Choque entre la exigencia de reportes burocráticos y la dinámica técnica ágil.</text>
+  </g>
+
+  <g transform="translate(880, 665)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="840" height="65" rx="12" fill="#1e1b4b" stroke="#f87171" stroke-width="1"/>
+    <circle cx="30" cy="32" r="14" fill="#dc2626"/>
+    <text x="30" y="37" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">3</text>
+    <text x="60" y="28" fill="#fca5a5" font-size="13" font-weight="bold">Impacto en Gestión: Dificultad para Tomar Decisiones Rápidas</text>
+    <text x="60" y="48" fill="#cbd5e1" font-size="11">Información crítica fragmentada en WhatsApp, correos, tableros y repositorios.</text>
+  </g>
+
+  <!-- ==================== RAMA 3: 4 ACCIONES DE MEJORA ==================== -->
+
+  <!-- Acción 1 -->
+  <g transform="translate(880, 775)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="310" height="68" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#6ee7b7" font-size="12" font-weight="bold">Acción 1: Unificación de Canales</text>
+    <text x="15" y="45" fill="#e2e8f0" font-size="11">Reemplazar WhatsApp por Helpdesk</text>
+    <text x="15" y="58" fill="#a7f3d0" font-size="10">Integración con Backlog GitHub/Trello</text>
+  </g>
+  <g transform="translate(1250, 775)">
+    <rect x="0" y="0" width="470" height="68" rx="12" fill="#0f172a" stroke="#16a34a" stroke-width="1"/>
+    <text x="15" y="28" fill="#86efac" font-size="11" font-weight="bold">Consiste en:</text>
+    <text x="15" y="48" fill="#cbd5e1" font-size="11">Sistema formal de tickets para soporte en campo con 100% trazabilidad.</text>
+  </g>
+
+  <!-- Acción 2 -->
+  <g transform="translate(880, 865)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="310" height="68" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#6ee7b7" font-size="12" font-weight="bold">Acción 2: Capacitación Ágil (Gerencia)</text>
+    <text x="15" y="45" fill="#e2e8f0" font-size="11">Inclusión en Cultura Ágil</text>
+    <text x="15" y="58" fill="#a7f3d0" font-size="10">Participación activa en Sprint Reviews</text>
+  </g>
+  <g transform="translate(1250, 865)">
+    <rect x="0" y="0" width="470" height="68" rx="12" fill="#0f172a" stroke="#16a34a" stroke-width="1"/>
+    <text x="15" y="28" fill="#86efac" font-size="11" font-weight="bold">Consiste en:</text>
+    <text x="15" y="48" fill="#cbd5e1" font-size="11">Alinear a directivos y analistas en entregas incrementales y demos quincenales.</text>
+  </g>
+
+  <!-- Acción 3 -->
+  <g transform="translate(880, 955)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="310" height="68" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#6ee7b7" font-size="12" font-weight="bold">Acción 3: Reportes Automatizados</text>
+    <text x="15" y="45" fill="#e2e8f0" font-size="11">Dashboards en Tiempo Real</text>
+    <text x="15" y="58" fill="#a7f3d0" font-size="10">Sincronización directa GitHub/Trello</text>
+  </g>
+  <g transform="translate(1250, 955)">
+    <rect x="0" y="0" width="470" height="68" rx="12" fill="#0f172a" stroke="#16a34a" stroke-width="1"/>
+    <text x="15" y="28" fill="#86efac" font-size="11" font-weight="bold">Consiste en:</text>
+    <text x="15" y="48" fill="#cbd5e1" font-size="11">Dashboards automáticos para gerencia, eliminando informes manuales en Word.</text>
+  </g>
+
+  <!-- Acción 4 -->
+  <g transform="translate(880, 1045)" filter="url(#shadow-main)">
+    <rect x="0" y="0" width="310" height="68" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#6ee7b7" font-size="12" font-weight="bold">Acción 4: Estandarizar Requerimientos</text>
+    <text x="15" y="45" fill="#e2e8f0" font-size="11">Historias de Usuario (User Stories)</text>
+    <text x="15" y="58" fill="#a7f3d0" font-size="10">Criterios de Aceptación Claros en Trello</text>
+  </g>
+  <g transform="translate(1250, 1045)">
+    <rect x="0" y="0" width="470" height="68" rx="12" fill="#0f172a" stroke="#16a34a" stroke-width="1"/>
+    <text x="15" y="28" fill="#86efac" font-size="11" font-weight="bold">Consiste en:</text>
+    <text x="15" y="48" fill="#cbd5e1" font-size="11">Eliminar correos ambiguos y definir criterios Given-When-Then testeables.</text>
+  </g>
+
+</svg>

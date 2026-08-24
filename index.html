@@ -1,0 +1,2460 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Conceptual Interactivo: Estilos de Comunicación en Software</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Vis.js Network -->
+  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  
+  <!-- Mermaid.js for embedded diagramming -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  
+  <!-- html2canvas for High-Res PNG Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Canvas Confetti for Quiz celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+            mono: ['"Fira Code"', 'monospace'],
+          },
+          colors: {
+            sena: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.25);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.45);
+    }
+
+    #network-container {
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+
+    /* Grid background pattern */
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(148, 163, 184, 0.22) 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+    }
+    .dark .bg-grid-pattern {
+      background-image: radial-gradient(rgba(71, 85, 105, 0.35) 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+    }
+
+    /* Glass effect */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .dark .glass-panel {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+        overflow: visible !important;
+      }
+      #viewStory, #viewRoles, #viewProblems, #viewRoadmap {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-200 overflow-hidden flex flex-col">
+
+  <!-- TOP HEADER NAVBAR -->
+  <header class="no-print h-16 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md z-30 flex items-center justify-between px-3 md:px-6 shrink-0 shadow-sm gap-2">
+    
+    <!-- Branding & Info -->
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
+        <i class="fa-solid fa-diagram-project text-lg"></i>
+      </div>
+      <div class="truncate">
+        <div class="flex items-center gap-2">
+          <h1 class="font-display font-bold text-sm md:text-base text-slate-900 dark:text-white leading-tight truncate">
+            Mapa Conceptual: Comunicación en Software
+          </h1>
+          <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+            SENA ADSO
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block truncate">
+          Caso Logística: 4 Estilos · Diagnóstico del Problema · Plan de Transformación
+        </p>
+      </div>
+    </div>
+
+    <!-- Center / Right: Navigation Modes Switcher -->
+    <div class="flex items-center gap-1.5 md:gap-2 shrink-0">
+      
+      <!-- View Switcher Tabs -->
+      <nav class="flex items-center p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 text-xs overflow-x-auto max-w-[50vw] sm:max-w-none">
+        
+        <!-- Tab 1: Modo Guiado -->
+        <button onclick="switchView('story')" id="btnViewStory" class="view-tab-btn active px-2.5 md:px-3 py-1.5 font-medium rounded-lg bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-wand-magic-sparkles text-emerald-500"></i>
+          <span class="hidden md:inline">Modo Guiado</span>
+        </button>
+
+        <!-- Tab 2: Grafo Interactivo -->
+        <button onclick="switchView('network')" id="btnViewNetwork" class="view-tab-btn px-2.5 md:px-3 py-1.5 font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-circle-nodes"></i>
+          <span class="hidden md:inline">Grafo Conceptual</span>
+        </button>
+
+        <!-- Tab 3: Actores y Matriz -->
+        <button onclick="switchView('roles')" id="btnViewRoles" class="view-tab-btn px-2.5 md:px-3 py-1.5 font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-users-viewfinder"></i>
+          <span class="hidden md:inline">Actores & Vs</span>
+        </button>
+
+        <!-- Tab 4: Diagnóstico Causa-Efecto -->
+        <button onclick="switchView('problems')" id="btnViewProblems" class="view-tab-btn px-2.5 md:px-3 py-1.5 font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+          <span class="hidden md:inline">El Problema</span>
+        </button>
+
+        <!-- Tab 5: Roadmap Soluciones -->
+        <button onclick="switchView('roadmap')" id="btnViewRoadmap" class="view-tab-btn px-2.5 md:px-3 py-1.5 font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-rocket text-indigo-500"></i>
+          <span class="hidden md:inline">Soluciones</span>
+        </button>
+
+        <!-- Tab 6: Mini Quiz -->
+        <button onclick="switchView('quiz')" id="btnViewQuiz" class="view-tab-btn px-2.5 md:px-3 py-1.5 font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-clipboard-question text-rose-500"></i>
+          <span class="hidden lg:inline">Quiz</span>
+        </button>
+
+        <!-- Tab 7: Mermaid -->
+        <button onclick="switchView('mermaid')" id="btnViewMermaid" class="view-tab-btn px-2.5 md:px-3 py-1.5 font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-code"></i>
+          <span class="hidden lg:inline">Mermaid</span>
+        </button>
+      </nav>
+
+      <!-- Theme Toggle -->
+      <button onclick="toggleDarkMode()" title="Cambiar Tema (Oscuro/Claro)" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition shrink-0">
+        <i class="fa-solid fa-moon dark:hidden text-xs"></i>
+        <i class="fa-solid fa-sun hidden dark:inline text-amber-400 text-xs"></i>
+      </button>
+
+      <!-- Export Dropdown -->
+      <div class="relative shrink-0">
+        <button onclick="toggleExportMenu()" id="exportMenuBtn" class="h-8 md:h-9 px-2.5 md:px-3 flex items-center gap-1.5 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-600/30 transition">
+          <i class="fa-solid fa-download"></i>
+          <span class="hidden sm:inline">Exportar</span>
+          <i class="fa-solid fa-chevron-down text-[9px] opacity-80"></i>
+        </button>
+
+        <div id="exportDropdown" class="hidden absolute right-0 mt-2 w-52 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xl py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+          <button onclick="exportGraphAsPNG()" class="w-full px-3.5 py-2 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2.5">
+            <i class="fa-solid fa-file-image text-emerald-500 w-4"></i> Exportar Grafo (PNG)
+          </button>
+          <button onclick="window.print()" class="w-full px-3.5 py-2 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2.5">
+            <i class="fa-solid fa-file-pdf text-rose-500 w-4"></i> Imprimir / Guardar PDF
+          </button>
+          <button onclick="copyMermaidCode()" class="w-full px-3.5 py-2 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2.5">
+            <i class="fa-solid fa-clipboard text-indigo-500 w-4"></i> Copiar Código Mermaid
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION BODY -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- ========================================== -->
+    <!-- VIEW 1: MODO GUIADO PASO A PASO (STORY)   -->
+    <!-- ========================================== -->
+    <section id="viewStory" class="w-full h-full overflow-y-auto p-4 md:p-8 bg-slate-100/50 dark:bg-slate-900/40 bg-grid-pattern">
+      <div class="max-w-5xl mx-auto space-y-6">
+        
+        <!-- Story Progress Header -->
+        <div class="glass-panel p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 text-xs font-bold mb-1.5">
+              <i class="fa-solid fa-sparkles text-emerald-500"></i> Recorrido Pedagógico Interactivo
+            </div>
+            <h2 class="text-xl md:text-2xl font-display font-bold text-slate-900 dark:text-white">
+              Comprende el Caso de Estudio en 4 Pasos
+            </h2>
+            <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+              Aprende cómo la falta de alineación en canales de comunicación paralizó el proyecto de logística y cómo se soluciona.
+            </p>
+          </div>
+
+          <!-- Step Indicators -->
+          <div class="flex items-center gap-2 self-start md:self-auto">
+            <button onclick="goToStoryStep(1)" class="story-step-indicator w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition bg-emerald-600 text-white ring-4 ring-emerald-500/20" id="stepIndicator1">1</button>
+            <div class="w-6 h-0.5 bg-slate-300 dark:bg-slate-700"></div>
+            <button onclick="goToStoryStep(2)" class="story-step-indicator w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400" id="stepIndicator2">2</button>
+            <div class="w-6 h-0.5 bg-slate-300 dark:bg-slate-700"></div>
+            <button onclick="goToStoryStep(3)" class="story-step-indicator w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400" id="stepIndicator3">3</button>
+            <div class="w-6 h-0.5 bg-slate-300 dark:bg-slate-700"></div>
+            <button onclick="goToStoryStep(4)" class="story-step-indicator w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400" id="stepIndicator4">4</button>
+          </div>
+        </div>
+
+        <!-- Story Step 1: Contexto del Caso -->
+        <div id="storyStep1" class="story-step-card space-y-6">
+          <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white p-6 md:p-8 shadow-xl relative overflow-hidden">
+            <div class="relative z-10 max-w-3xl space-y-4">
+              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold inline-block">
+                Paso 1 · El Escenario
+              </span>
+              <h3 class="text-2xl md:text-3xl font-display font-bold">
+                ¿Qué está ocurriendo en el Proyecto de Logística?
+              </h3>
+              <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                Una empresa del sector logístico está desarrollando una plataforma integral de gestión de rutas y despachos. En el proyecto participan <b>4 grupos de trabajo clave</b>, pero cada uno se comunica con herramientas, tiempos y formatos totalmente desconectados.
+              </p>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div class="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-center">
+                  <i class="fa-solid fa-person-running text-cyan-400 text-lg mb-1"></i>
+                  <div class="text-xs font-bold">Ingenieros</div>
+                  <div class="text-[10px] text-slate-300">Estilo Ágil</div>
+                </div>
+                <div class="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-center">
+                  <i class="fa-solid fa-code text-purple-400 text-lg mb-1"></i>
+                  <div class="text-xs font-bold">Desarrolladores</div>
+                  <div class="text-[10px] text-slate-300">Estilo Colaborativo</div>
+                </div>
+                <div class="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-center">
+                  <i class="fa-solid fa-user-tie text-amber-400 text-lg mb-1"></i>
+                  <div class="text-xs font-bold">Directivos</div>
+                  <div class="text-[10px] text-slate-300">Estilo Jerárquico</div>
+                </div>
+                <div class="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-center">
+                  <i class="fa-solid fa-headset text-rose-400 text-lg mb-1"></i>
+                  <div class="text-xs font-bold">Soporte Campo</div>
+                  <div class="text-[10px] text-slate-300">Estilo Informal</div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+          </div>
+
+          <div class="flex justify-end">
+            <button onclick="goToStoryStep(2)" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs md:text-sm flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition">
+              Siguiente: Ver los 4 Estilos en Detalle <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Story Step 2: Los 4 Estilos -->
+        <div id="storyStep2" class="story-step-card hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-950/80 text-cyan-700 dark:text-cyan-300 text-xs font-bold">Paso 2 · Los 4 Estilos</span>
+              <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mt-1">
+                ¿Cómo se comunica cada equipo y dónde falla?
+              </h3>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Card 1: Ágil -->
+            <div class="rounded-2xl p-5 border border-cyan-200 dark:border-cyan-900/60 bg-white dark:bg-slate-800 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-cyan-100 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-person-running"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-white">1. Estilo Ágil</h4>
+                    <span class="text-[11px] text-cyan-600 dark:text-cyan-400 font-medium">Ingenieros de Software</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">Scrum / Verbal</span>
+              </div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Se basan en reuniones diarias (<b>Daily Scrum</b>) y contacto verbal/videollamada para destrabar impedimentos al instante.
+              </p>
+              <div class="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300">
+                  <b><i class="fa-solid fa-check"></i> Ventaja:</b> Sincronía y velocidad diaria.
+                </div>
+                <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300">
+                  <b><i class="fa-solid fa-xmark"></i> Falla:</b> Directivos no asisten; hay choque cultural.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Colaborativo -->
+            <div class="rounded-2xl p-5 border border-purple-200 dark:border-purple-900/60 bg-white dark:bg-slate-800 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-code"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-white">2. Estilo Colaborativo</h4>
+                    <span class="text-[11px] text-purple-600 dark:text-purple-400 font-medium">Desarrolladores</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">GitHub + Trello</span>
+              </div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Trabajan de forma asíncrona mediante tableros Kanban, commits, Pull Requests y repositorios compartidos.
+              </p>
+              <div class="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300">
+                  <b><i class="fa-solid fa-check"></i> Ventaja:</b> Código ordenado y flujo asíncrono.
+                </div>
+                <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300">
+                  <b><i class="fa-solid fa-xmark"></i> Falla:</b> Se crean "silos"; la gerencia no entra a GitHub.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Jerárquico -->
+            <div class="rounded-2xl p-5 border border-amber-200 dark:border-amber-900/60 bg-white dark:bg-slate-800 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-user-tie"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-white">3. Estilo Jerárquico</h4>
+                    <span class="text-[11px] text-amber-600 dark:text-amber-400 font-medium">Directivos y Analistas</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">Email / Informes</span>
+              </div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Exigen informes formales extensos por correo electrónico con cadenas de aprobación y firmas.
+              </p>
+              <div class="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300">
+                  <b><i class="fa-solid fa-check"></i> Ventaja:</b> Trazabilidad formal y soporte auditor.
+                </div>
+                <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300">
+                  <b><i class="fa-solid fa-xmark"></i> Falla:</b> Extremadamente lento; desfase con el desarrollo.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: Informal -->
+            <div class="rounded-2xl p-5 border border-rose-200 dark:border-rose-900/60 bg-white dark:bg-slate-800 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold">
+                    <i class="fa-brands fa-whatsapp"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-white">4. Informal (Falla)</h4>
+                    <span class="text-[11px] text-rose-600 dark:text-rose-400 font-medium">Soporte en Campo</span>
+                  </div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">WhatsApp</span>
+              </div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Reportan errores directamente por mensajes instantáneos de WhatsApp desde camiones y centros de distribución.
+              </p>
+              <div class="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300">
+                  <b><i class="fa-solid fa-check"></i> Ventaja:</b> Inmediatez y cero barrera técnica inicial.
+                </div>
+                <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300">
+                  <b><i class="fa-solid fa-xmark"></i> Falla:</b> Fuga de fallas críticas, reportes duplicados.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex items-center justify-between">
+            <button onclick="goToStoryStep(1)" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
+              <i class="fa-solid fa-arrow-left"></i> Anterior
+            </button>
+            <button onclick="goToStoryStep(3)" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs md:text-sm flex items-center gap-2 shadow-lg shadow-red-600/30 transition">
+              Siguiente: Ver el Choque y Consecuencias <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Story Step 3: Consecuencias (El Problema) -->
+        <div id="storyStep3" class="story-step-card hidden space-y-6">
+          <div class="rounded-2xl p-6 border border-red-200 dark:border-red-900/60 bg-red-50/70 dark:bg-slate-900 shadow-sm space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-xs font-bold">Paso 3 · El Problema</span>
+              <span class="text-xs font-mono text-red-600 dark:text-red-400 font-semibold">Impacto en el Proyecto</span>
+            </div>
+            <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white">
+              ¿Cuáles fueron las 3 grandes consecuencias del choque?
+            </h3>
+            <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300">
+              La incompatibilidad entre el canal informal de campo, el repositorio cerrado de desarrollo y la burocracia gerencial detonó 3 impactos críticos:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              
+              <!-- Consecuencia 1 -->
+              <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/60 shadow-xs space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 flex items-center justify-center text-base">
+                  <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <h4 class="font-bold text-sm text-slate-900 dark:text-white">1. Retrasos en Módulos</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Las historias de usuario quedaron bloqueadas porque los requerimientos cambiaban por correo sin registrarse en los sprints.
+                </p>
+              </div>
+
+              <!-- Consecuencia 2 -->
+              <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/60 shadow-xs space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 flex items-center justify-center text-base">
+                  <i class="fa-solid fa-fire-burner"></i>
+                </div>
+                <h4 class="font-bold text-sm text-slate-900 dark:text-white">2. Frustración y Choque</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Los desarrolladores sentían que la gerencia les exigía papeleo inútil, mientras que los directivos sentían descontrol e incertidumbre.
+                </p>
+              </div>
+
+              <!-- Consecuencia 3 -->
+              <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/60 shadow-xs space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 flex items-center justify-center text-base">
+                  <i class="fa-solid fa-eye-slash"></i>
+                </div>
+                <h4 class="font-bold text-sm text-slate-900 dark:text-white">3. Decisiones a Ciegas</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Al estar la información dispersa entre WhatsApp, Correos, GitHub y Trello, era imposible saber el estado real del software.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <button onclick="goToStoryStep(2)" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
+              <i class="fa-solid fa-arrow-left"></i> Anterior
+            </button>
+            <button onclick="goToStoryStep(4)" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs md:text-sm flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition">
+              Siguiente: Ver la Solución Estratégica <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Story Step 4: Soluciones de Mejora -->
+        <div id="storyStep4" class="story-step-card hidden space-y-6">
+          <div class="rounded-2xl p-6 border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/70 dark:bg-slate-900 shadow-sm space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-xs font-bold">Paso 4 · La Solución</span>
+              <span class="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-semibold">Plan de 4 Acciones</span>
+            </div>
+            <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white">
+              Plan Estratégico de Transformación Comunicativa
+            </h3>
+            <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300">
+              Para erradicar los silos y sincronizar a todos los actores, se implementan 4 acciones operativas directas:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              
+              <!-- Solución 1 -->
+              <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 shadow-xs flex items-start gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
+                  A1
+                </div>
+                <div class="space-y-1">
+                  <h4 class="font-bold text-sm text-slate-900 dark:text-white">Unificación de Canales (Tickets)</h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">
+                    Reemplazar WhatsApp por un <b>sistema de Tickets Helpdesk conectado con GitHub/Trello</b>. Los incidentes en ruta entran directamente al backlog.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Solución 2 -->
+              <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 shadow-xs flex items-start gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
+                  A2
+                </div>
+                <div class="space-y-1">
+                  <h4 class="font-bold text-sm text-slate-900 dark:text-white">Capacitación Ágil para Gerencia</h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">
+                    Capacitar a directivos y analistas en metodologías ágiles (<b>Sprint Review y valor incremental</b>) para alinear expectativas y lenguaje.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Solución 3 -->
+              <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 shadow-xs flex items-start gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
+                  A3
+                </div>
+                <div class="space-y-1">
+                  <h4 class="font-bold text-sm text-slate-900 dark:text-white">Dashboards Automatizados</h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">
+                    Generar <b>informes ejecutivos en tiempo real desde GitHub y Trello</b>. La gerencia audita avances sin exigir reportes manuales a los devs.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Solución 4 -->
+              <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 shadow-xs flex items-start gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
+                  A4
+                </div>
+                <div class="space-y-1">
+                  <h4 class="font-bold text-sm text-slate-900 dark:text-white">Historias de Usuario Estandarizadas</h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">
+                    Convertir requerimientos extensos en <b>Historias de Usuario (User Stories) con criterios de aceptación</b> redactados directamente en Trello.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <button onclick="goToStoryStep(3)" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
+              <i class="fa-solid fa-arrow-left"></i> Anterior
+            </button>
+            <div class="flex gap-2">
+              <button onclick="switchView('network')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-circle-nodes"></i> Ver Grafo Completo
+              </button>
+              <button onclick="switchView('quiz')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs md:text-sm flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition">
+                ¡Hacer Test de Comprensión! <i class="fa-solid fa-check-double"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: INTERACTIVE CONCEPTUAL NETWORK    -->
+    <!-- ========================================== -->
+    <section id="viewNetwork" class="hidden w-full h-full flex flex-row relative overflow-hidden">
+      
+      <!-- SIDEBAR CONTROLS & LEGEND -->
+      <aside id="sidebar" class="no-print w-72 md:w-80 border-r border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex flex-col shrink-0 z-20 transition-all duration-300 overflow-y-auto">
+        <div class="p-4 space-y-4">
+          
+          <!-- Search input -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">
+              Buscar en el Grafo
+            </label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input 
+                type="text" 
+                id="nodeSearch" 
+                placeholder="Ej. Scrum, WhatsApp, Trello..." 
+                class="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800/80 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-200 placeholder-slate-400 transition"
+                oninput="handleSearch(this.value)"
+              />
+              <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Complexity Mode Toggle (Simple / Detailed) -->
+          <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1.5">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-sliders text-emerald-500"></i> Nivel de Detalle:</span>
+              <span id="detailModeLabel" class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Limpio (Eje)</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
+              <button onclick="setGraphDetailMode('clean')" id="btnDetailClean" class="px-2 py-1 rounded text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 transition text-center">
+                Vista Limpia
+              </button>
+              <button onclick="setGraphDetailMode('full')" id="btnDetailFull" class="px-2 py-1 rounded text-[11px] font-medium text-slate-500 hover:text-slate-800 dark:hover:text-white transition text-center">
+                Todos los Nodos
+              </button>
+            </div>
+          </div>
+
+          <!-- Branch Filters -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Filtrar por Ramas
+              </label>
+              <span class="text-[10px] text-slate-400">Clic para aislar</span>
+            </div>
+            <div class="space-y-1" id="branchFilters">
+              <button onclick="filterBranch('all')" data-filter="all" class="filter-btn active w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 transition">
+                <span class="flex items-center gap-2">
+                  <i class="fa-solid fa-layer-group text-slate-500"></i> Todo el Mapa
+                </span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">100%</span>
+              </button>
+
+              <button onclick="filterBranch('agile')" data-filter="agile" class="filter-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent transition">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span> 1. Estilo Ágil
+                </span>
+                <span class="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono">Scrum</span>
+              </button>
+
+              <button onclick="filterBranch('collab')" data-filter="collab" class="filter-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent transition">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> 2. Colaborativo
+                </span>
+                <span class="text-[10px] text-purple-600 dark:text-purple-400 font-mono">GitHub</span>
+              </button>
+
+              <button onclick="filterBranch('hierarch')" data-filter="hierarch" class="filter-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent transition">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> 3. Jerárquico
+                </span>
+                <span class="text-[10px] text-amber-600 dark:text-amber-400 font-mono">Informes</span>
+              </button>
+
+              <button onclick="filterBranch('informal')" data-filter="informal" class="filter-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent transition">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> 4. Informal (Falla)
+                </span>
+                <span class="text-[10px] text-rose-600 dark:text-rose-400 font-mono">WhatsApp</span>
+              </button>
+
+              <button onclick="filterBranch('problem')" data-filter="problem" class="filter-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent transition">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Rama 2: Problema
+                </span>
+                <span class="text-[10px] text-red-600 dark:text-red-400 font-mono">Impactos</span>
+              </button>
+
+              <button onclick="filterBranch('solution')" data-filter="solution" class="filter-btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent transition">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Rama 3: Solución
+                </span>
+                <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">4 Acciones</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Layout Dispositions -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">
+              Orientación
+            </label>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="setLayout('hierarchical-LR')" class="px-2 py-1.5 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-1 transition">
+                <i class="fa-solid fa-arrows-split-up-and-left rotate-90 text-[10px]"></i> Horizontal
+              </button>
+              <button onclick="setLayout('hierarchical-UD')" class="px-2 py-1.5 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-1 transition">
+                <i class="fa-solid fa-sitemap text-[10px]"></i> Vertical
+              </button>
+              <button onclick="setLayout('physics')" class="px-2 py-1.5 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-1 transition">
+                <i class="fa-solid fa-atom text-[10px]"></i> Orgánico
+              </button>
+              <button onclick="resetGraphView()" class="px-2 py-1.5 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-1 transition">
+                <i class="fa-solid fa-expand text-[10px]"></i> Centrar
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Tip -->
+          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-slate-800/80 border border-emerald-200 dark:border-emerald-900/40 text-[11px] space-y-1">
+            <div class="font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
+              <i class="fa-solid fa-hand-pointer"></i> Tip Interactivo:
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 leading-snug">
+              Haz clic en cualquier nodo para abrir el panel lateral con su ficha técnica y soluciones asociadas.
+            </p>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- NETWORK CANVAS -->
+      <main class="flex-1 h-full relative bg-slate-100/60 dark:bg-slate-950 bg-grid-pattern overflow-hidden">
+        
+        <!-- Floating Canvas Controls -->
+        <div id="graphControls" class="no-print absolute bottom-4 left-4 z-10 flex items-center gap-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl">
+          <button onclick="zoomGraph(1.25)" title="Acercar (Zoom +)" class="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition">
+            <i class="fa-solid fa-plus text-xs"></i>
+          </button>
+          <button onclick="zoomGraph(0.8)" title="Alejar (Zoom -)" class="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition">
+            <i class="fa-solid fa-minus text-xs"></i>
+          </button>
+          <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
+          <button onclick="resetGraphView()" title="Ajustar y Centrar" class="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition">
+            <i class="fa-solid fa-arrows-to-dot text-xs"></i>
+          </button>
+          <button onclick="togglePhysics()" id="physicsToggleBtn" title="Pausar/Reanudar Física" class="px-2.5 h-8 flex items-center gap-1.5 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition">
+            <i class="fa-solid fa-pause text-[10px]"></i> <span>Física</span>
+          </button>
+        </div>
+
+        <!-- Vis.js container -->
+        <div id="network-container"></div>
+      </main>
+
+      <!-- RIGHT DRAWER: NODE DETAILS -->
+      <aside id="detailDrawer" class="no-print hidden absolute right-0 top-0 bottom-0 w-80 md:w-96 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-l border-slate-200 dark:border-slate-800 shadow-2xl z-30 flex flex-col transition-all duration-300 animate-in slide-in-from-right duration-200">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="drawerBadge" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span id="drawerCategory" class="text-xs font-bold uppercase tracking-wider text-slate-400">Detalle del Nodo</span>
+          </div>
+          <button onclick="closeDetailDrawer()" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-5 space-y-4">
+          <div>
+            <h3 id="drawerTitle" class="text-lg font-bold font-display text-slate-900 dark:text-white leading-snug"></h3>
+            <p id="drawerSubtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-mono"></p>
+          </div>
+
+          <div id="drawerContent" class="space-y-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300"></div>
+
+          <div id="drawerRelations" class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+            <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Conexiones y Enlaces</label>
+            <div id="drawerRelationsList" class="space-y-1.5"></div>
+          </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between">
+          <button onclick="focusSelectedNode()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-crosshairs"></i> Centrar en Grafo
+          </button>
+          <button onclick="closeDetailDrawer()" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            Cerrar
+          </button>
+        </div>
+      </aside>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 3: MATRIZ DE ROLES Y COMPARADOR VS   -->
+    <!-- ========================================== -->
+    <section id="viewRoles" class="hidden w-full h-full overflow-y-auto p-4 md:p-8 space-y-8 bg-slate-100/50 dark:bg-slate-900/40 bg-grid-pattern">
+      <div class="max-w-6xl mx-auto space-y-8">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-xs font-bold mb-1">
+              <i class="fa-solid fa-users"></i> Quién es Quién en el Proyecto
+            </div>
+            <h2 class="text-2xl font-display font-bold text-slate-900 dark:text-white">
+              Matriz de Actores & Estilos de Comunicación
+            </h2>
+            <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+              Analiza los 4 roles del caso logístico, sus canales preferidos, sus fortalezas y el choque cultural.
+            </p>
+          </div>
+        </div>
+
+        <!-- 4 Role Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- Actor 1: Ingenieros -->
+          <div class="rounded-2xl p-5 border border-cyan-200 dark:border-cyan-900/60 bg-white dark:bg-slate-800 shadow-sm flex flex-col justify-between hover:shadow-md transition space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">Rol 1</span>
+                <span class="w-8 h-8 rounded-xl bg-cyan-100 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-person-running"></i>
+                </span>
+              </div>
+              <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Ingenieros de Software</h3>
+              
+              <div class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                <div><b class="text-slate-900 dark:text-white">Estilo:</b> Ágil</div>
+                <div><b class="text-slate-900 dark:text-white">Canal:</b> Verbal / Daily Scrum</div>
+                <div><b class="text-slate-900 dark:text-white">Prioridad:</b> Resolver bloqueos rápido</div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 space-y-1.5 text-[11px]">
+              <div class="text-emerald-600 dark:text-emerald-400"><b>+</b> Sincronía continua de avances</div>
+              <div class="text-rose-600 dark:text-rose-400"><b>-</b> Aislados de la visión gerencial</div>
+            </div>
+          </div>
+
+          <!-- Actor 2: Desarrolladores -->
+          <div class="rounded-2xl p-5 border border-purple-200 dark:border-purple-900/60 bg-white dark:bg-slate-800 shadow-sm flex flex-col justify-between hover:shadow-md transition space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">Rol 2</span>
+                <span class="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-code"></i>
+                </span>
+              </div>
+              <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Desarrolladores</h3>
+              
+              <div class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                <div><b class="text-slate-900 dark:text-white">Estilo:</b> Colaborativo</div>
+                <div><b class="text-slate-900 dark:text-white">Canal:</b> Trello & GitHub</div>
+                <div><b class="text-slate-900 dark:text-white">Prioridad:</b> Tareas visuales y commits</div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 space-y-1.5 text-[11px]">
+              <div class="text-emerald-600 dark:text-emerald-400"><b>+</b> Código ordenado y asíncrono</div>
+              <div class="text-rose-600 dark:text-rose-400"><b>-</b> Generan "silos" de información</div>
+            </div>
+          </div>
+
+          <!-- Actor 3: Directivos -->
+          <div class="rounded-2xl p-5 border border-amber-200 dark:border-amber-900/60 bg-white dark:bg-slate-800 shadow-sm flex flex-col justify-between hover:shadow-md transition space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Rol 3</span>
+                <span class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-user-tie"></i>
+                </span>
+              </div>
+              <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Directivos & Analistas</h3>
+              
+              <div class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                <div><b class="text-slate-900 dark:text-white">Estilo:</b> Jerárquico Tradicional</div>
+                <div><b class="text-slate-900 dark:text-white">Canal:</b> Email & Reportes PDF</div>
+                <div><b class="text-slate-900 dark:text-white">Prioridad:</b> Trazabilidad y control</div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 space-y-1.5 text-[11px]">
+              <div class="text-emerald-600 dark:text-emerald-400"><b>+</b> Respaldo formal para auditoría</div>
+              <div class="text-rose-600 dark:text-rose-400"><b>-</b> Lento y desconectado del ritmo</div>
+            </div>
+          </div>
+
+          <!-- Actor 4: Soporte Campo -->
+          <div class="rounded-2xl p-5 border border-rose-200 dark:border-rose-900/60 bg-white dark:bg-slate-800 shadow-sm flex flex-col justify-between hover:shadow-md transition space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Rol 4</span>
+                <span class="w-8 h-8 rounded-xl bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center text-sm">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </span>
+              </div>
+              <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Soporte en Campo</h3>
+              
+              <div class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                <div><b class="text-slate-900 dark:text-white">Estilo:</b> Informal / Desestructurado</div>
+                <div><b class="text-slate-900 dark:text-white">Canal:</b> WhatsApp</div>
+                <div><b class="text-slate-900 dark:text-white">Prioridad:</b> Reportar fallas al instante</div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 space-y-1.5 text-[11px]">
+              <div class="text-emerald-600 dark:text-emerald-400"><b>+</b> Inmediatez y sin fricción de app</div>
+              <div class="text-rose-600 dark:text-rose-400"><b>-</b> Fuga de fallas críticas y sin rastreo</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Interactive Confrontation Tool: "Frente a Frente (Vs)" -->
+        <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-lg space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-500">Herramienta Interactiva</span>
+              <h3 class="text-lg font-display font-bold text-slate-900 dark:text-white">
+                Simulador de Choque Cultural "Frente a Frente" (Vs)
+              </h3>
+            </div>
+            <p class="text-xs text-slate-500">Selecciona dos roles para ver dónde se genera el conflicto y la solución aplicada.</p>
+          </div>
+
+          <!-- Selector Controls -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Rol A (Emisor):</label>
+              <select id="vsRoleA" onchange="updateVsComparison()" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-emerald-500">
+                <option value="directivo" selected>Directivos & Analistas (Estilo Jerárquico / Email)</option>
+                <option value="dev">Desarrolladores (Estilo Colaborativo / GitHub)</option>
+                <option value="campo">Soporte en Campo (Estilo Informal / WhatsApp)</option>
+                <option value="agil">Ingenieros de Software (Estilo Ágil / Scrum)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">Rol B (Receptor):</label>
+              <select id="vsRoleB" onchange="updateVsComparison()" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-emerald-500">
+                <option value="dev" selected>Desarrolladores (Estilo Colaborativo / GitHub)</option>
+                <option value="directivo">Directivos & Analistas (Estilo Jerárquico / Email)</option>
+                <option value="campo">Soporte en Campo (Estilo Informal / WhatsApp)</option>
+                <option value="agil">Ingenieros de Software (Estilo Ágil / Scrum)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Comparison Result Box -->
+          <div id="vsResultBox" class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 space-y-4">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 4: DIAGNÓSTICO DEL PROBLEMA          -->
+    <!-- ========================================== -->
+    <section id="viewProblems" class="hidden w-full h-full overflow-y-auto p-4 md:p-8 space-y-6 bg-slate-100/50 dark:bg-slate-900/40 bg-grid-pattern">
+      <div class="max-w-5xl mx-auto space-y-6">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 text-xs font-bold mb-1">
+              <i class="fa-solid fa-triangle-exclamation text-red-500"></i> Diagnóstico Integral
+            </div>
+            <h2 class="text-2xl font-display font-bold text-slate-900 dark:text-white">
+              Causa $ightarrow$ Efecto: Las Consecuencias del Choque
+            </h2>
+            <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+              Cómo la dispersión de canales provocó el colapso operativo en el proyecto de logística.
+            </p>
+          </div>
+        </div>
+
+        <!-- Causa - Efecto Cards -->
+        <div class="space-y-4">
+          
+          <!-- Problem 1 -->
+          <div class="rounded-2xl bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/60 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 flex items-center justify-center text-sm font-bold">1</span>
+                <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">
+                  Retrasos en la Entrega de Módulos Clave
+                </h3>
+              </div>
+              <span class="text-xs font-mono font-semibold text-red-600 dark:text-red-400">Impacto en Cronograma</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-1">
+                <span class="font-bold text-slate-500 dark:text-slate-400 uppercase text-[10px]">Causa Raíz:</span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Los analistas enviaban modificaciones por correo electrónico que nunca se convertían en tarjetas de Trello/GitHub, dejando a los desarrolladores trabajando en especificaciones obsoletas.
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-red-50/70 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 space-y-1">
+                <span class="font-bold text-red-700 dark:text-red-300 uppercase text-[10px]">Efecto en el Proyecto:</span>
+                <p class="text-red-800 dark:text-red-300">
+                  Reprocesos constantes, módulos de despacho entregados fuera de fecha y desalineación con los transportistas en campo.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Problem 2 -->
+          <div class="rounded-2xl bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/60 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 flex items-center justify-center text-sm font-bold">2</span>
+                <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">
+                  Frustración y Choque de Expectativas (Devs vs. Directivos)
+                </h3>
+              </div>
+              <span class="text-xs font-mono font-semibold text-red-600 dark:text-red-400">Impacto en Clima & Cultura</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-1">
+                <span class="font-bold text-slate-500 dark:text-slate-400 uppercase text-[10px]">Causa Raíz:</span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  La gerencia exigía informes manuales semanales en formato Word/PDF, interrumpiendo el flujo de concentración del equipo ágil.
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-red-50/70 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 space-y-1">
+                <span class="font-bold text-red-700 dark:text-red-300 uppercase text-[10px]">Efecto en el Proyecto:</span>
+                <p class="text-red-800 dark:text-red-300">
+                  Desmotivación técnica, reuniones improductivas y pérdida de confianza mutua entre ingeniería y dirección ejecutiva.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Problem 3 -->
+          <div class="rounded-2xl bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/60 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 flex items-center justify-center text-sm font-bold">3</span>
+                <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">
+                  Dificultad de Decisiones por Información Dispersa
+                </h3>
+              </div>
+              <span class="text-xs font-mono font-semibold text-red-600 dark:text-red-400">Impacto en Gestión</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-1">
+                <span class="font-bold text-slate-500 dark:text-slate-400 uppercase text-[10px]">Causa Raíz:</span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Los fallos de camiones en ruta quedaban en chats privados de WhatsApp, mientras que el estado real del código estaba en commits de GitHub que nadie más leía.
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-red-50/70 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 space-y-1">
+                <span class="font-bold text-red-700 dark:text-red-300 uppercase text-[10px]">Efecto en el Proyecto:</span>
+                <p class="text-red-800 dark:text-red-300">
+                  Imposibilidad de auditar incidencias, duplicación de arreglos y toma de decisiones gerenciales basada en suposiciones.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 5: ROADMAP DE SOLUCIONES (ANTES/DESPUÉS) -->
+    <!-- ========================================== -->
+    <section id="viewRoadmap" class="hidden w-full h-full overflow-y-auto p-4 md:p-8 space-y-6 bg-slate-100/50 dark:bg-slate-900/40 bg-grid-pattern">
+      <div class="max-w-5xl mx-auto space-y-6">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-bold mb-1">
+              <i class="fa-solid fa-wand-magic-sparkles text-emerald-500"></i> Plan de Transformación
+            </div>
+            <h2 class="text-2xl font-display font-bold text-slate-900 dark:text-white">
+              Roadmap de Solución: Antes vs. Después
+            </h2>
+            <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+              Comparativa directa de la transición hacia un modelo comunicativo unificado y ágil.
+            </p>
+          </div>
+        </div>
+
+        <!-- 4 Action Comparative Blocks -->
+        <div class="space-y-4">
+          
+          <!-- Acción 1 -->
+          <div class="rounded-2xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">A1</span>
+                <div>
+                  <h3 class="font-display font-bold text-sm md:text-base text-slate-900 dark:text-white">Acción 1: Unificación de Canales de Soporte</h3>
+                  <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Reemplazo de WhatsApp por Sistema de Tickets Formal</span>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">Trazabilidad 100%</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+              <div class="p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 space-y-1">
+                <span class="font-bold text-rose-700 dark:text-rose-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-xmark"></i> Antes (Falla):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Técnicos enviando audios y fotos por WhatsApp; los bugs se perdían entre chats personales y no se priorizaban.
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 space-y-1">
+                <span class="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-check"></i> Después (Solución):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Helpdesk integrado (ej. Jira Service Desk o Forms) conectado directamente al backlog de GitHub/Trello con SLAs claros.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acción 2 -->
+          <div class="rounded-2xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">A2</span>
+                <div>
+                  <h3 class="font-display font-bold text-sm md:text-base text-slate-900 dark:text-white">Acción 2: Capacitación en Cultura Ágil para Directivos</h3>
+                  <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Inclusión de la Gerencia en Sprint Reviews y Dailies</span>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">Alineación Cultural</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+              <div class="p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 space-y-1">
+                <span class="font-bold text-rose-700 dark:text-rose-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-xmark"></i> Antes (Falla):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Directivos aislados que interpretaban la agilidad como "falta de planeación" y exigían contratos cerrados.
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 space-y-1">
+                <span class="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-check"></i> Después (Solución):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Participación activa en entregas incrementales quincenales (Sprint Reviews) con feedback en vivo sobre el software.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acción 3 -->
+          <div class="rounded-2xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">A3</span>
+                <div>
+                  <h3 class="font-display font-bold text-sm md:text-base text-slate-900 dark:text-white">Acción 3: Protocolos de Reporte Automatizados</h3>
+                  <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Dashboards en Tiempo Real desde Trello y GitHub</span>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">Cero Burocracia</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+              <div class="p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 space-y-1">
+                <span class="font-bold text-rose-700 dark:text-rose-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-xmark"></i> Antes (Falla):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Horas perdidas de programación redactando informes en Word que quedaban desactualizados al día siguiente.
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 space-y-1">
+                <span class="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-check"></i> Después (Solución):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Tableros de control automatizados con gráficos Burn-Down y métricas de velocidad visibles para directivos en cualquier momento.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acción 4 -->
+          <div class="rounded-2xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">A4</span>
+                <div>
+                  <h3 class="font-display font-bold text-sm md:text-base text-slate-900 dark:text-white">Acción 4: Estandarización de Requerimientos</h3>
+                  <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Historias de Usuario con Criterios de Aceptación Claros</span>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">Criterios Claros</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+              <div class="p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 space-y-1">
+                <span class="font-bold text-rose-700 dark:text-rose-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-xmark"></i> Antes (Falla):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Correos interminables con requerimientos ambiguos que daban pie a múltiples interpretaciones y código inservible.
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 space-y-1">
+                <span class="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[10px] flex items-center gap-1">
+                  <i class="fa-solid fa-check"></i> Después (Solución):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300">
+                  Plantillas estándar de User Stories (<i>"Como [rol] quiero [función] para [beneficio]"</i>) con criterios <i>Given-When-Then</i> en Trello.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 6: MINI QUIZ INTERACTIVO             -->
+    <!-- ========================================== -->
+    <section id="viewQuiz" class="hidden w-full h-full overflow-y-auto p-4 md:p-8 space-y-6 bg-slate-100/50 dark:bg-slate-900/40 bg-grid-pattern">
+      <div class="max-w-3xl mx-auto space-y-6">
+        
+        <!-- Quiz Header -->
+        <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 text-xs font-bold">
+            <i class="fa-solid fa-brain"></i> Autoevaluación Rápida
+          </div>
+          <h2 class="text-2xl font-display font-bold text-slate-900 dark:text-white">
+            ¿Comprendiste el Caso de Estudio?
+          </h2>
+          <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
+            Responde estas 4 preguntas clave para comprobar tu dominio sobre los estilos de comunicación y las soluciones propuestas.
+          </p>
+          <div id="quizScoreBadge" class="hidden inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500 text-white font-bold text-sm shadow-md mt-2">
+            <i class="fa-solid fa-award"></i> <span id="quizScoreText">Puntaje: 4/4</span>
+          </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quizQuestionsContainer" class="space-y-4"></div>
+
+        <!-- Quiz Actions -->
+        <div class="flex items-center justify-between pt-2">
+          <button onclick="resetQuiz()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i class="fa-solid fa-rotate-left"></i> Reiniciar Test
+          </button>
+          <button onclick="checkQuizAnswers()" id="btnSubmitQuiz" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs md:text-sm shadow-lg shadow-emerald-600/30 transition">
+            Verificar Respuestas <i class="fa-solid fa-arrow-check"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 7: MERMAID & CODE EXPORT             -->
+    <!-- ========================================== -->
+    <section id="viewMermaid" class="hidden w-full h-full overflow-y-auto p-4 md:p-8 space-y-6 bg-slate-100/50 dark:bg-slate-900/40 bg-grid-pattern">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Diagrama Mermaid del Mapa Conceptual</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Renderizado estándar compatible con Markdown, Notion, GitHub y GitLab.</p>
+          </div>
+          <button onclick="copyMermaidCode()" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1.5 transition shadow-sm">
+            <i class="fa-solid fa-copy"></i> Copiar Código Mermaid
+          </button>
+        </div>
+
+        <!-- Mermaid Render Canvas -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md overflow-x-auto">
+          <pre class="mermaid text-xs">
+graph TD
+    %% NODO CENTRAL
+    NC["<b>Comunicación en el Proyecto de Software</b><br><i>(Caso Logística)</i>"]
+
+    %% RAMAS PRINCIPALES
+    NC -->|se divide en| R1["<b>Estilos de Comunicación Presentes</b>"]
+    NC -->|genera| R2["<b>Consecuencias del Proyecto</b><br><i>(El Problema)</i>"]
+    NC -->|requiere| R3["<b>Acciones de Mejora</b><br><i>(La Solución)</i>"]
+
+    %% SUB-RAMAS: ESTILOS
+    R1 --> E1["1. Estilo Ágil"]
+    R1 --> E2["2. Estilo Colaborativo"]
+    R1 --> E3["3. Estilo Jerárquico / Tradicional"]
+    R1 --> E4["4. Comunicación Informal / Desestructurada"]
+
+    %% DETALLES ESTILO ÁGIL
+    E1 -->|utilizado por| E1_U["Ingenieros de Software"]
+    E1 -->|práctica principal| E1_P["Reuniones Diarias (Scrum Meetings)"]
+    E1 -->|medio digital| E1_M["Comunicación verbal / Videoconferencia"]
+    E1 -->|tiene ventajas| E1_V["Ventajas: Sincronización diaria rápida"]
+    E1 -->|tiene desventajas| E1_D["Desventajas: Sin directivos, choque cultural"]
+
+    %% DETALLES ESTILO COLABORATIVO
+    E2 -->|utilizado por| E2_U["Desarrolladores"]
+    E2 -->|medios digitales| E2_M["Trello y GitHub"]
+    E2 -->|tiene ventajas| E2_V["Ventajas: Código centralizado y asíncrono"]
+    E2 -->|tiene desventajas| E2_D["Desventajas: Silos aislados de directivos"]
+
+    %% DETALLES ESTILO JERÁRQUICO
+    E3 -->|utilizado por| E3_U["Directivos y Analistas de Negocio"]
+    E3 -->|práctica principal| E3_P["Exigencia de Reportes y Documentación"]
+    E3 -->|medios digitales| E3_M["Correo Electrónico y Reportes Formales"]
+    E3 -->|tiene ventajas| E3_V["Ventajas: Trazabilidad y auditoría formal"]
+    E3 -->|tiene desventajas| E3_D["Desventajas: Lento y burocrático"]
+
+    %% DETALLES COMUNICACIÓN INFORMAL
+    E4 -->|utilizado por| E4_U["Técnicos de Soporte en Campo"]
+    E4 -->|medios digitales| E4_M["WhatsApp"]
+    E4 -->|tiene ventajas| E4_V["Ventajas: Rapidez e inmediatez"]
+    E4 -->|tiene desventajas| E4_D["Desventajas: Fuga de datos y sin rastreo"]
+
+    %% CONSECUENCIAS
+    R2 -->|incluyen| C1["Retrasos en la entrega de módulos clave"]
+    R2 -->|incluyen| C2["Frustración Desarrolladores vs. Directivos"]
+    R2 -->|incluyen| C3["Dificultad de decisiones por datos dispersos"]
+
+    %% ACCIONES DE MEJORA
+    R3 -->|acción 1| A1["Unificación de Canales de Comunicación"]
+    A1 -->|consiste en| A1_C["Reemplazar WhatsApp por tickets integrados con GitHub/Trello"]
+
+    R3 -->|acción 2| A2["Capacitación en Metodologías Ágiles"]
+    A2 -->|consiste en| A2_C["Integrar directivos a la cultura ágil"]
+
+    R3 -->|acción 3| A3["Protocolos de Reporte Automatizados"]
+    A3 -->|consiste en| A3_C["Dashboards automáticos para directivos sin sobrecargar al equipo"]
+
+    R3 -->|acción 4| A4["Estandarización de Requerimientos"]
+    A4 -->|consiste en| A4_C["Convertir correos extensos en Historias de Usuario en Trello"]
+
+    %% ESTILOS VISUALES
+    classDef central fill:#047857,stroke:#065f46,stroke-width:3px,color:#fff;
+    classDef styles fill:#0284c7,stroke:#0369a1,stroke-width:2px,color:#fff;
+    classDef problems fill:#b91c1c,stroke:#991b1b,stroke-width:2px,color:#fff;
+    classDef solutions fill:#059669,stroke:#047857,stroke-width:2px,color:#fff;
+    
+    class NC central;
+    class R1,E1,E2,E3,E4 styles;
+    class R2,C1,C2,C3 problems;
+    class R3,A1,A2,A3,A4 solutions;
+          </pre>
+        </div>
+
+        <!-- Code Box -->
+        <div class="rounded-2xl bg-slate-900 border border-slate-800 p-4 text-xs font-mono text-slate-300">
+          <div class="flex items-center justify-between mb-2 text-slate-400">
+            <span>Código Fuente Markdown / Mermaid</span>
+            <span class="text-[10px]">Listo para copiar a informes SENA</span>
+          </div>
+          <textarea id="rawMermaidCode" readonly class="w-full h-48 bg-slate-950 p-3 rounded-xl border border-slate-800 text-emerald-400 font-mono text-xs resize-none focus:outline-none"></textarea>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none px-4 py-2.5 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold shadow-2xl flex items-center gap-2">
+    <i id="toastIcon" class="fa-solid fa-check text-emerald-400 dark:text-emerald-600"></i>
+    <span id="toastMessage">Acción completada</span>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // 1. DATASET DEFINITION FOR THE CONCEPT MAP
+    const mapData = {
+      nodes: [
+        // Level 0: Central Node
+        { 
+          id: 'central', 
+          label: 'Comunicación en el\nProyecto de Software\n(Caso Logística)', 
+          category: 'central',
+          isClean: true,
+          shape: 'box',
+          level: 0,
+          color: { background: '#059669', border: '#047857', highlight: { background: '#10b981', border: '#059669' } },
+          font: { color: '#ffffff', size: 14, bold: true, face: 'Plus Jakarta Sans' },
+          margin: 14,
+          details: {
+            title: 'Comunicación en el Proyecto de Software (Caso Logística)',
+            category: 'Nodo Central',
+            description: 'Eje central del análisis. Evalúa cómo la heterogeneidad de estilos de comunicación entre roles genera fallas críticas en el proyecto de logística y define el plan de transformación.'
+          }
+        },
+
+        // Level 1: Main Branches
+        { 
+          id: 'branch_styles', 
+          label: 'Estilos de Comunicación\nPresentes (4 Roles)', 
+          category: 'styles',
+          isClean: true,
+          shape: 'box',
+          level: 1,
+          color: { background: '#0284c7', border: '#0369a1', highlight: { background: '#38bdf8', border: '#0284c7' } },
+          font: { color: '#ffffff', size: 12, bold: true, face: 'Plus Jakarta Sans' },
+          margin: 10,
+          details: {
+            title: 'Estilos de Comunicación Presentes',
+            category: 'Rama 1: Diagnóstico de Estilos',
+            description: 'Identificación de las 4 modalidades y canales de comunicación que conviven actualmente en el equipo de logística.'
+          }
+        },
+        { 
+          id: 'branch_problems', 
+          label: 'Consecuencias del Proyecto\n(El Problema)', 
+          category: 'problem',
+          isClean: true,
+          shape: 'box',
+          level: 1,
+          color: { background: '#dc2626', border: '#b91c1c', highlight: { background: '#ef4444', border: '#dc2626' } },
+          font: { color: '#ffffff', size: 12, bold: true, face: 'Plus Jakarta Sans' },
+          margin: 10,
+          details: {
+            title: 'Consecuencias del Proyecto (El Problema)',
+            category: 'Rama 2: Impacto Negativo',
+            description: 'Efectos adversos generados por la falta de un canal unificado, desalineación cultural y herramientas aisladas.'
+          }
+        },
+        { 
+          id: 'branch_solutions', 
+          label: 'Acciones de Mejora\n(La Solución)', 
+          category: 'solution',
+          isClean: true,
+          shape: 'box',
+          level: 1,
+          color: { background: '#16a34a', border: '#15803d', highlight: { background: '#22c55e', border: '#16a34a' } },
+          font: { color: '#ffffff', size: 12, bold: true, face: 'Plus Jakarta Sans' },
+          margin: 10,
+          details: {
+            title: 'Acciones de Mejora (La Solución)',
+            category: 'Rama 3: Plan de Acción',
+            description: 'Propuestas estratégicas para integrar herramientas, alinear la gerencia con la agilidad y estandarizar requerimientos.'
+          }
+        },
+
+        // --- SUB-RAMA 1: ESTILOS ---
+        // 1. Estilo Ágil
+        { 
+          id: 'agile_root', 
+          label: '1. Estilo Ágil\n(Scrum Diaria)', 
+          category: 'agile',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#0891b2', border: '#0e7490', highlight: { background: '#06b6d4', border: '#0891b2' } },
+          font: { color: '#ffffff', size: 11, bold: true },
+          margin: 8,
+          details: {
+            title: '1. Estilo Ágil',
+            category: 'Estilo de Comunicación',
+            role: 'Ingenieros de Software',
+            tools: 'Comunicación verbal / Videoconferencias / Daily Scrum',
+            advantages: 'Sincronización diaria inmediata, rápida identificación de bloqueos.',
+            disadvantages: 'Falta de participación directiva, choque cultural con la gerencia tradicional.'
+          }
+        },
+        { id: 'agile_user', label: 'Rol: Ingenieros\nde Software', category: 'agile', isClean: false, shape: 'ellipse', level: 3, color: { background: '#cffafe', border: '#06b6d4' }, font: { color: '#0e7490', size: 10 } },
+        { id: 'agile_practice', label: 'Práctica: Reuniones\nDiarias (Dailies)', category: 'agile', isClean: false, shape: 'box', level: 3, color: { background: '#ecfeff', border: '#22d3ee' }, font: { color: '#155e75', size: 10 } },
+        { id: 'agile_adv', label: 'Ventaja: Sincronía rápida\ny desbloqueo diario', category: 'agile', isClean: false, shape: 'box', level: 3, color: { background: '#f0fdf4', border: '#86efac' }, font: { color: '#166534', size: 10 } },
+        { id: 'agile_disadv', label: 'Falla: Choque cultural\ncon directivos', category: 'agile', isClean: false, shape: 'box', level: 3, color: { background: '#fef2f2', border: '#fca5a5' }, font: { color: '#991b1b', size: 10 } },
+
+        // 2. Estilo Colaborativo
+        { 
+          id: 'collab_root', 
+          label: '2. Estilo Colaborativo\n(GitHub + Trello)', 
+          category: 'collab',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#7c3aed', border: '#6d28d9', highlight: { background: '#8b5cf6', border: '#7c3aed' } },
+          font: { color: '#ffffff', size: 11, bold: true },
+          margin: 8,
+          details: {
+            title: '2. Estilo Colaborativo',
+            category: 'Estilo de Comunicación',
+            role: 'Desarrolladores',
+            tools: 'Trello y GitHub',
+            advantages: 'Centralización de código, gestión visual de tareas, trabajo asíncrono eficiente.',
+            disadvantages: 'Creación de "silos" de información; directivos y analistas no usan estas herramientas.'
+          }
+        },
+        { id: 'collab_user', label: 'Rol: Desarrolladores', category: 'collab', isClean: false, shape: 'ellipse', level: 3, color: { background: '#ede9fe', border: '#8b5cf6' }, font: { color: '#5b21b6', size: 10 } },
+        { id: 'collab_media', label: 'Medios: GitHub & Trello', category: 'collab', isClean: false, shape: 'box', level: 3, color: { background: '#f5f3ff', border: '#a78bfa' }, font: { color: '#5b21b6', size: 10 } },
+        { id: 'collab_adv', label: 'Ventaja: Código centralizado\ny trabajo asíncrono', category: 'collab', isClean: false, shape: 'box', level: 3, color: { background: '#f0fdf4', border: '#86efac' }, font: { color: '#166534', size: 10 } },
+        { id: 'collab_disadv', label: 'Falla: Crea silos aislados\nde la gerencia', category: 'collab', isClean: false, shape: 'box', level: 3, color: { background: '#fef2f2', border: '#fca5a5' }, font: { color: '#991b1b', size: 10 } },
+
+        // 3. Estilo Jerárquico / Tradicional
+        { 
+          id: 'hierarch_root', 
+          label: '3. Estilo Jerárquico\n(Email & Reportes)', 
+          category: 'hierarch',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#d97706', border: '#b45309', highlight: { background: '#f59e0b', border: '#d97706' } },
+          font: { color: '#ffffff', size: 11, bold: true },
+          margin: 8,
+          details: {
+            title: '3. Estilo Jerárquico / Tradicional',
+            category: 'Estilo de Comunicación',
+            role: 'Directivos y Analistas de Negocio',
+            tools: 'Correo Electrónico y Reportes Formales Extensos',
+            advantages: 'Mantiene registro formal, trazabilidad para auditorías y decisiones gerenciales.',
+            disadvantages: 'Lento, burocrático, desconectado del ritmo de desarrollo ágil.'
+          }
+        },
+        { id: 'hierarch_user', label: 'Rol: Directivos y\nAnalistas', category: 'hierarch', isClean: false, shape: 'ellipse', level: 3, color: { background: '#fef3c7', border: '#f59e0b' }, font: { color: '#92400e', size: 10 } },
+        { id: 'hierarch_practice', label: 'Práctica: Informes Formales\ny Cadenas de Correo', category: 'hierarch', isClean: false, shape: 'box', level: 3, color: { background: '#fffbeb', border: '#fcd34d' }, font: { color: '#92400e', size: 10 } },
+        { id: 'hierarch_adv', label: 'Ventaja: Trazabilidad\ny respaldo auditor', category: 'hierarch', isClean: false, shape: 'box', level: 3, color: { background: '#f0fdf4', border: '#86efac' }, font: { color: '#166534', size: 10 } },
+        { id: 'hierarch_disadv', label: 'Falla: Burocrático, lento\ny desactualizado', category: 'hierarch', isClean: false, shape: 'box', level: 3, color: { background: '#fef2f2', border: '#fca5a5' }, font: { color: '#991b1b', size: 10 } },
+
+        // 4. Comunicación Informal / Desestructurada
+        { 
+          id: 'informal_root', 
+          label: '4. Informal (Falla)\n(WhatsApp en Campo)', 
+          category: 'informal',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#e11d48', border: '#be123c', highlight: { background: '#fb7185', border: '#e11d48' } },
+          font: { color: '#ffffff', size: 11, bold: true },
+          margin: 8,
+          details: {
+            title: '4. Comunicación Informal / Desestructurada',
+            category: 'Estilo de Comunicación (Falla)',
+            role: 'Técnicos de Soporte en Campo',
+            tools: 'WhatsApp',
+            advantages: 'Rapidez e inmediatez desde el terreno operativo.',
+            disadvantages: 'Pérdida de información crítica, reportes duplicados, imposible de rastrear.'
+          }
+        },
+        { id: 'informal_user', label: 'Rol: Soporte en Campo', category: 'informal', isClean: false, shape: 'ellipse', level: 3, color: { background: '#ffe4e6', border: '#fb7185' }, font: { color: '#9f1239', size: 10 } },
+        { id: 'informal_media', label: 'Medio: WhatsApp', category: 'informal', isClean: false, shape: 'box', level: 3, color: { background: '#fff1f2', border: '#fda4af' }, font: { color: '#9f1239', size: 10 } },
+        { id: 'informal_adv', label: 'Ventaja: Inmediatez\ndesde el terreno', category: 'informal', isClean: false, shape: 'box', level: 3, color: { background: '#f0fdf4', border: '#86efac' }, font: { color: '#166534', size: 10 } },
+        { id: 'informal_disadv', label: 'Falla: Pérdida crítica\nde fallas y sin rastreo', category: 'informal', isClean: false, shape: 'box', level: 3, color: { background: '#fef2f2', border: '#fca5a5' }, font: { color: '#991b1b', size: 10 } },
+
+        // --- RAMA 2: CONSECUENCIAS ---
+        { 
+          id: 'problem_1', 
+          label: '1. Retrasos en entrega\nde módulos clave', 
+          category: 'problem',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#fee2e2', border: '#ef4444' },
+          font: { color: '#991b1b', size: 10.5, bold: true },
+          details: {
+            title: 'Retrasos en Entregas de Módulos',
+            category: 'Consecuencia',
+            description: 'La falta de sincronía entre el avance de desarrollo y la retroalimentación de requerimientos genera cuellos de botella en el cronograma.'
+          }
+        },
+        { 
+          id: 'problem_2', 
+          label: '2. Frustración:\nDevs vs. Directivos', 
+          category: 'problem',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#fee2e2', border: '#ef4444' },
+          font: { color: '#991b1b', size: 10.5, bold: true },
+          details: {
+            title: 'Frustración y Choque de Expectativas',
+            category: 'Consecuencia',
+            description: 'Divergencia entre la cultura ágil de los programadores y la exigencia de reportes formales exhaustivos de los directivos.'
+          }
+        },
+        { 
+          id: 'problem_3', 
+          label: '3. Decisiones lentas\npor datos dispersos', 
+          category: 'problem',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#fee2e2', border: '#ef4444' },
+          font: { color: '#991b1b', size: 10.5, bold: true },
+          details: {
+            title: 'Información Dispersa y No Trazable',
+            category: 'Consecuencia',
+            description: 'Datos clave repartidos entre chats de WhatsApp, hilos de correo, tickets de Trello y repositorios GitHub.'
+          }
+        },
+
+        // --- RAMA 3: ACCIONES DE MEJORA ---
+        { 
+          id: 'action_1', 
+          label: 'A1: Unificación de Canales\n(Tickets vs WhatsApp)', 
+          category: 'solution',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#059669', border: '#047857' },
+          font: { color: '#ffffff', size: 10.5, bold: true },
+          details: {
+            title: 'Acción 1: Unificación de Canales',
+            category: 'Acción de Mejora',
+            description: 'Reemplazar WhatsApp por un sistema de tickets formal integrado con GitHub o Trello para centralizar incidencias de soporte en campo.'
+          }
+        },
+        { 
+          id: 'action_2', 
+          label: 'A2: Capacitación en\nCultura Ágil (Gerencia)', 
+          category: 'solution',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#059669', border: '#047857' },
+          font: { color: '#ffffff', size: 10.5, bold: true },
+          details: {
+            title: 'Acción 2: Capacitación Ágil',
+            category: 'Acción de Mejora',
+            description: 'Integrar a los directivos y analistas en la cultura ágil para que comprendan los sprints, dailies y entregas incrementales.'
+          }
+        },
+        { 
+          id: 'action_3', 
+          label: 'A3: Reportes y Dashboards\nAutomatizados', 
+          category: 'solution',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#059669', border: '#047857' },
+          font: { color: '#ffffff', size: 10.5, bold: true },
+          details: {
+            title: 'Acción 3: Reportes Automatizados',
+            category: 'Acción de Mejora',
+            description: 'Dashboards generados automáticamente desde GitHub/Trello para cumplir con el seguimiento gerencial sin fricción ni burocracia.'
+          }
+        },
+        { 
+          id: 'action_4', 
+          label: 'A4: Estandarización de\nHistorias de Usuario', 
+          category: 'solution',
+          isClean: true,
+          shape: 'box',
+          level: 2,
+          color: { background: '#059669', border: '#047857' },
+          font: { color: '#ffffff', size: 10.5, bold: true },
+          details: {
+            title: 'Acción 4: Estandarización de Requerimientos',
+            category: 'Acción de Mejora',
+            description: 'Convertir la documentación extensa por correo electrónico en Historias de Usuario con criterios de aceptación claros en Trello.'
+          }
+        }
+      ],
+
+      edges: [
+        // Central Node Connections
+        { from: 'central', to: 'branch_styles', label: 'se divide en', isClean: true, font: { size: 10, color: '#0284c7' }, color: { color: '#0284c7' }, width: 2.5 },
+        { from: 'central', to: 'branch_problems', label: 'genera', isClean: true, font: { size: 10, color: '#dc2626' }, color: { color: '#dc2626' }, width: 2.5 },
+        { from: 'central', to: 'branch_solutions', label: 'requiere', isClean: true, font: { size: 10, color: '#16a34a' }, color: { color: '#16a34a' }, width: 2.5 },
+
+        // Branch 1 -> 4 Styles
+        { from: 'branch_styles', to: 'agile_root', label: '1.', isClean: true, font: { size: 9, color: '#0891b2' }, color: { color: '#0891b2' } },
+        { from: 'branch_styles', to: 'collab_root', label: '2.', isClean: true, font: { size: 9, color: '#7c3aed' }, color: { color: '#7c3aed' } },
+        { from: 'branch_styles', to: 'hierarch_root', label: '3.', isClean: true, font: { size: 9, color: '#d97706' }, color: { color: '#d97706' } },
+        { from: 'branch_styles', to: 'informal_root', label: '4.', isClean: true, font: { size: 9, color: '#e11d48' }, color: { color: '#e11d48' } },
+
+        // Details Agile
+        { from: 'agile_root', to: 'agile_user', label: 'utilizado por', isClean: false, font: { size: 9, color: '#0891b2' }, color: { color: '#0891b2' } },
+        { from: 'agile_root', to: 'agile_practice', label: 'práctica', isClean: false, font: { size: 9, color: '#0891b2' }, color: { color: '#0891b2' } },
+        { from: 'agile_root', to: 'agile_adv', label: 'ventaja', isClean: false, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+        { from: 'agile_root', to: 'agile_disadv', label: 'falla', isClean: false, font: { size: 9, color: '#dc2626' }, color: { color: '#dc2626' } },
+
+        // Details Collab
+        { from: 'collab_root', to: 'collab_user', label: 'utilizado por', isClean: false, font: { size: 9, color: '#7c3aed' }, color: { color: '#7c3aed' } },
+        { from: 'collab_root', to: 'collab_media', label: 'canales', isClean: false, font: { size: 9, color: '#7c3aed' }, color: { color: '#7c3aed' } },
+        { from: 'collab_root', to: 'collab_adv', label: 'ventaja', isClean: false, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+        { from: 'collab_root', to: 'collab_disadv', label: 'falla', isClean: false, font: { size: 9, color: '#dc2626' }, color: { color: '#dc2626' } },
+
+        // Details Hierarch
+        { from: 'hierarch_root', to: 'hierarch_user', label: 'utilizado por', isClean: false, font: { size: 9, color: '#d97706' }, color: { color: '#d97706' } },
+        { from: 'hierarch_root', to: 'hierarch_practice', label: 'canales', isClean: false, font: { size: 9, color: '#d97706' }, color: { color: '#d97706' } },
+        { from: 'hierarch_root', to: 'hierarch_adv', label: 'ventaja', isClean: false, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+        { from: 'hierarch_root', to: 'hierarch_disadv', label: 'falla', isClean: false, font: { size: 9, color: '#dc2626' }, color: { color: '#dc2626' } },
+
+        // Details Informal
+        { from: 'informal_root', to: 'informal_user', label: 'utilizado por', isClean: false, font: { size: 9, color: '#e11d48' }, color: { color: '#e11d48' } },
+        { from: 'informal_root', to: 'informal_media', label: 'canal', isClean: false, font: { size: 9, color: '#e11d48' }, color: { color: '#e11d48' } },
+        { from: 'informal_root', to: 'informal_adv', label: 'ventaja', isClean: false, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+        { from: 'informal_root', to: 'informal_disadv', label: 'falla', isClean: false, font: { size: 9, color: '#dc2626' }, color: { color: '#dc2626' } },
+
+        // Branch 2 -> Problems
+        { from: 'branch_problems', to: 'problem_1', label: 'incluyen', isClean: true, font: { size: 9, color: '#dc2626' }, color: { color: '#dc2626' } },
+        { from: 'branch_problems', to: 'problem_2', label: 'incluyen', isClean: true, font: { size: 9, color: '#dc2626' }, color: { color: '#dc2626' } },
+        { from: 'branch_problems', to: 'problem_3', label: 'incluyen', isClean: true, font: { size: 9, color: '#dc2626' }, color: { color: '#dc2626' } },
+
+        // Branch 3 -> Solutions
+        { from: 'branch_solutions', to: 'action_1', label: 'acción 1', isClean: true, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+        { from: 'branch_solutions', to: 'action_2', label: 'acción 2', isClean: true, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+        { from: 'branch_solutions', to: 'action_3', label: 'acción 3', isClean: true, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+        { from: 'branch_solutions', to: 'action_4', label: 'acción 4', isClean: true, font: { size: 9, color: '#16a34a' }, color: { color: '#16a34a' } },
+      ]
+    };
+
+    let network = null;
+    let currentDetailMode = 'clean';
+    let currentLayout = 'hierarchical-LR';
+    let isPhysicsEnabled = true;
+    let selectedNodeId = null;
+    let activeFilter = 'all';
+
+    let nodesDataSet = new vis.DataSet();
+    let edgesDataSet = new vis.DataSet();
+
+    function populateGraphData() {
+      let activeNodes = mapData.nodes;
+      let activeEdges = mapData.edges;
+
+      if (currentDetailMode === 'clean') {
+        activeNodes = activeNodes.filter(n => n.isClean);
+        const validIds = new Set(activeNodes.map(n => n.id));
+        activeEdges = activeEdges.filter(e => validIds.has(e.from) && validIds.has(e.to));
+      }
+
+      if (activeFilter !== 'all') {
+        activeNodes = activeNodes.filter(n => 
+          n.id === 'central' || 
+          n.category === activeFilter || 
+          (activeFilter === 'agile' && (n.id.startsWith('agile_') || n.id === 'branch_styles')) ||
+          (activeFilter === 'collab' && (n.id.startsWith('collab_') || n.id === 'branch_styles')) ||
+          (activeFilter === 'hierarch' && (n.id.startsWith('hierarch_') || n.id === 'branch_styles')) ||
+          (activeFilter === 'informal' && (n.id.startsWith('informal_') || n.id === 'branch_styles')) ||
+          (activeFilter === 'problem' && (n.id.startsWith('problem_') || n.id === 'branch_problems')) ||
+          (activeFilter === 'solution' && (n.id.startsWith('action_') || n.id === 'branch_solutions'))
+        );
+        const validIds = new Set(activeNodes.map(n => n.id));
+        activeEdges = activeEdges.filter(e => validIds.has(e.from) && validIds.has(e.to));
+      }
+
+      nodesDataSet.clear();
+      nodesDataSet.add(activeNodes);
+      edgesDataSet.clear();
+      edgesDataSet.add(activeEdges);
+    }
+
+    function initNetwork(layoutType = 'hierarchical-LR') {
+      const container = document.getElementById('network-container');
+      const isDark = document.documentElement.classList.contains('dark');
+      
+      populateGraphData();
+
+      let options = {
+        autoResize: true,
+        height: '100%',
+        width: '100%',
+        nodes: {
+          shape: 'box',
+          margin: { top: 8, bottom: 8, left: 12, right: 12 },
+          borderWidth: 1.5,
+          shadow: {
+            enabled: true,
+            color: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.06)',
+            size: 6,
+            x: 2,
+            y: 3
+          },
+          font: {
+            face: 'Plus Jakarta Sans',
+            size: 11
+          }
+        },
+        edges: {
+          arrows: {
+            to: { enabled: true, scaleFactor: 0.65, type: 'arrow' }
+          },
+          smooth: {
+            enabled: true,
+            type: 'cubicBezier',
+            roundness: 0.45
+          },
+          font: {
+            face: 'Plus Jakarta Sans',
+            align: 'middle',
+            background: isDark ? '#0f172a' : '#ffffff',
+            strokeWidth: 0,
+            size: 9.5
+          },
+          hoverWidth: 1.5
+        },
+        interaction: {
+          hover: true,
+          tooltipDelay: 150,
+          keyboard: true,
+          zoomView: true,
+          dragView: true
+        }
+      };
+
+      if (layoutType === 'hierarchical-LR') {
+        options.layout = {
+          hierarchical: {
+            direction: 'LR',
+            sortMethod: 'directed',
+            levelSeparation: 230,
+            nodeSpacing: 75,
+            treeSpacing: 100,
+            blockShifting: true,
+            edgeMinimization: true
+          }
+        };
+        options.physics = { enabled: false };
+      } else if (layoutType === 'hierarchical-UD') {
+        options.layout = {
+          hierarchical: {
+            direction: 'UD',
+            sortMethod: 'directed',
+            levelSeparation: 140,
+            nodeSpacing: 140,
+            treeSpacing: 160
+          }
+        };
+        options.physics = { enabled: false };
+      } else {
+        options.layout = { hierarchical: { enabled: false } };
+        options.physics = {
+          enabled: isPhysicsEnabled,
+          solver: 'forceAtlas2Based',
+          forceAtlas2Based: {
+            gravitationalConstant: -60,
+            centralGravity: 0.012,
+            springLength: 120,
+            springConstant: 0.08,
+            damping: 0.4,
+            avoidOverlap: 0.85
+          },
+          stabilization: { iterations: 120 }
+        };
+      }
+
+      network = new vis.Network(container, { nodes: nodesDataSet, edges: edgesDataSet }, options);
+
+      network.on('click', function(params) {
+        if (params.nodes.length > 0) {
+          showNodeDetails(params.nodes[0]);
+        } else {
+          closeDetailDrawer();
+        }
+      });
+    }
+
+    function setGraphDetailMode(mode) {
+      currentDetailMode = mode;
+      const btnClean = document.getElementById('btnDetailClean');
+      const btnFull = document.getElementById('btnDetailFull');
+      const label = document.getElementById('detailModeLabel');
+
+      if (mode === 'clean') {
+        btnClean.className = 'px-2 py-1 rounded text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 transition text-center';
+        btnFull.className = 'px-2 py-1 rounded text-[11px] font-medium text-slate-500 hover:text-slate-800 dark:hover:text-white transition text-center';
+        label.innerText = 'Limpio (Eje)';
+        showToast('Modo de vista limpia activado');
+      } else {
+        btnFull.className = 'px-2 py-1 rounded text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 transition text-center';
+        btnClean.className = 'px-2 py-1 rounded text-[11px] font-medium text-slate-500 hover:text-slate-800 dark:hover:text-white transition text-center';
+        label.innerText = 'Completo (Todos)';
+        showToast('Mostrando todos los sub-nodos y ventajas');
+      }
+
+      populateGraphData();
+      if (network) network.fit({ animation: { duration: 500 } });
+    }
+
+    // 3. STORY MODE CONTROLS
+    function goToStoryStep(stepNumber) {
+      document.querySelectorAll('.story-step-card').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.story-step-indicator').forEach(el => {
+        el.className = 'story-step-indicator w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+      });
+
+      const activeCard = document.getElementById(`storyStep${stepNumber}`);
+      const activeIndicator = document.getElementById(`stepIndicator${stepNumber}`);
+
+      if (activeCard) activeCard.classList.remove('hidden');
+      if (activeIndicator) {
+        activeIndicator.className = 'story-step-indicator w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition bg-emerald-600 text-white ring-4 ring-emerald-500/20';
+      }
+    }
+
+    // 4. VS COMPARISON SIMULATOR
+    const vsData = {
+      'directivo_dev': {
+        title: 'Directivos (Email) vs. Desarrolladores (GitHub/Trello)',
+        status: 'Fricción Alta (Choque Cultural Principal)',
+        conflict: 'Los directivos solicitan informes extensos en PDF/Word que interrumpen los sprints. Los desarrolladores no documentan en correo y asumen que todo está en los Pull Requests de GitHub, herramienta que la gerencia no sabe utilizar.',
+        solution: '<b>Acción 3 y 4:</b> Implementar Dashboards automáticos para que la gerencia vea métricas en vivo y estandarizar requerimientos como Historias de Usuario en Trello.'
+      },
+      'dev_directivo': {
+        title: 'Desarrolladores (GitHub/Trello) vs. Directivos (Email)',
+        status: 'Fricción Alta (Choque Cultural Principal)',
+        conflict: 'Los desarrolladores se sienten sobrecargados de burocracia manual, mientras los directivos sienten pérdida de control y falta de trazabilidad ejecutiva.',
+        solution: '<b>Acción 3 y 4:</b> Generación automática de informes ejecutivos sincronizados con GitHub.'
+      },
+      'campo_dev': {
+        title: 'Soporte en Campo (WhatsApp) vs. Desarrolladores (GitHub/Trello)',
+        status: 'Falla Crítica de Información',
+        conflict: 'Los técnicos de campo reportan caídas del sistema por chats informales de WhatsApp. Los desarrolladores nunca se enteran a tiempo porque solo atienden el tablero de Trello.',
+        solution: '<b>Acción 1:</b> Eliminar WhatsApp como canal oficial y adoptar una mesa de ayuda (Helpdesk/Tickets) que cree automáticamente incidencias en GitHub/Trello.'
+      },
+      'dev_campo': {
+        title: 'Desarrolladores (GitHub/Trello) vs. Soporte en Campo (WhatsApp)',
+        status: 'Falla Crítica de Información',
+        conflict: 'Los arreglos de código se despliegan en el repositorio pero el personal de campo no recibe confirmación estructurada ni instrucciones claras de actualización.',
+        solution: '<b>Acción 1:</b> Notificaciones automáticas de resolución de tickets directo al personal de campo.'
+      },
+      'agil_directivo': {
+        title: 'Ingenieros (Scrum) vs. Directivos (Tradicional)',
+        status: 'Desalineación Metodológica',
+        conflict: 'Las reuniones diarias (Dailies) resuelven problemas rápidos pero la dirección no asiste y sigue esperando contratos y cronogramas de cascada cerrados.',
+        solution: '<b>Acción 2:</b> Capacitar a directivos en ceremonias ágiles (Sprint Review) para validar avances quincenales en lugar de pedir fechas rígidas.'
+      },
+      'directivo_agil': {
+        title: 'Directivos (Tradicional) vs. Ingenieros (Scrum)',
+        status: 'Desalineación Metodológica',
+        conflict: 'La gerencia percibe la agilidad como falta de planificación y exige compromisos anuales sin margen para la iteración.',
+        solution: '<b>Acción 2:</b> Capacitación en entregas continuas y Product Backlog valorado por retorno de inversión.'
+      }
+    };
+
+    function updateVsComparison() {
+      const roleA = document.getElementById('vsRoleA').value;
+      const roleB = document.getElementById('vsRoleB').value;
+      const resultBox = document.getElementById('vsResultBox');
+
+      if (roleA === roleB) {
+        resultBox.innerHTML = `
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-center text-xs text-slate-500">
+            <i class="fa-solid fa-users text-lg mb-1 block"></i>
+            Has seleccionado el mismo rol en ambos lados. Selecciona dos roles diferentes para analizar el choque comunicativo.
+          </div>`;
+        return;
+      }
+
+      const key = `${roleA}_${roleB}`;
+      const defaultInfo = vsData[key] || vsData[`${roleB}_${roleA}`] || {
+        title: 'Interacción entre Roles',
+        status: 'Falta de Puente Comunicativo',
+        conflict: 'Ambos roles utilizan canales incompatibles, generando retrasos en la respuesta y datos no sincronizados.',
+        solution: '<b>Unificación:</b> Estandarizar la comunicación a través del sistema central de tickets y ceremonias ágiles.'
+      };
+
+      resultBox.innerHTML = `
+        <div class="flex items-center justify-between">
+          <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-amber-500"></i> ${defaultInfo.title}
+          </h4>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-bold">
+            ${defaultInfo.status}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+          <div class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 block mb-1">
+              <i class="fa-solid fa-triangle-exclamation"></i> Choque / Conflicto:
+            </span>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${defaultInfo.conflict}</p>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block mb-1">
+              <i class="fa-solid fa-circle-check"></i> Solución Aplicada:
+            </span>
+            <p class="text-emerald-900 dark:text-emerald-200 leading-relaxed">${defaultInfo.solution}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // 5. INTERACTIVE QUIZ LOGIC
+    const quizQuestions = [
+      {
+        id: 1,
+        question: '1. ¿Qué falla crítica provocaba el uso de WhatsApp por parte del soporte en campo?',
+        options: [
+          { text: 'A) El código fuente se borraba del servidor automáticamente.', correct: false },
+          { text: 'B) Pérdida de incidencias críticas, reportes duplicados y cero trazabilidad.', correct: true },
+          { text: 'C) Los directivos no podían enviar correos electrónicos.', correct: false }
+        ],
+        explanation: 'WhatsApp es un canal informal que no se integra con las herramientas de gestión, dejando incidencias en chats privados sin registro.'
+      },
+      {
+        id: 2,
+        question: '2. ¿Por qué el estilo colaborativo (GitHub/Trello) de los desarrolladores generaba fricción con la gerencia?',
+        options: [
+          { text: 'A) Porque creaba "silos de información" que los directivos no consultaban ni entendían.', correct: true },
+          { text: 'B) Porque Trello solo funciona para proyectos de construcción.', correct: false },
+          { text: 'C) Porque los desarrolladores se negaban a escribir código en los sprints.', correct: false }
+        ],
+        explanation: 'Al no acceder a GitHub/Trello, la gerencia no tenía visibilidad del progreso y recurría a exigir informes manuales burocráticos.'
+      },
+      {
+        id: 3,
+        question: '3. ¿Cuál es la solución para evitar que los programadores pierdan tiempo redactando informes manuales?',
+        options: [
+          { text: 'A) Prohibir que los directivos hagan preguntas sobre el avance del proyecto.', correct: false },
+          { text: 'B) Crear Dashboards automatizados desde GitHub/Trello con métricas en tiempo real.', correct: true },
+          { text: 'C) Contratar mensajeros físicos para entregar cartas a la gerencia.', correct: false }
+        ],
+        explanation: 'La Acción 3 establece reportes automatizados que alimentan a la dirección ejecutiva sin interrumpir el flujo de programación.'
+      },
+      {
+        id: 4,
+        question: '4. ¿Cómo se soluciona la documentación extensa e interminable que se enviaba por correo electrónico?',
+        options: [
+          { text: 'A) Estandarizando Requerimientos en "Historias de Usuario" con Criterios de Aceptación.', correct: true },
+          { text: 'B) Enviando audios largos por mensajería instantánea.', correct: false },
+          { text: 'C) Imprimiendo los correos en carpetas físicas archivadas.', correct: false }
+        ],
+        explanation: 'La Acción 4 convierte correos ambiguos en Historias de Usuario claras con criterios Given-When-Then directamente en el tablero.'
+      }
+    ];
+
+    function renderQuiz() {
+      const container = document.getElementById('quizQuestionsContainer');
+      container.innerHTML = quizQuestions.map((q, idx) => `
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3" id="quizCard${q.id}">
+          <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white">
+            ${q.question}
+          </h4>
+          <div class="space-y-2">
+            ${q.options.map((opt, optIdx) => `
+              <label class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/60 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 cursor-pointer text-xs transition">
+                <input type="radio" name="q_${q.id}" value="${optIdx}" class="accent-emerald-600 w-4 h-4">
+                <span class="text-slate-700 dark:text-slate-300 font-medium">${opt.text}</span>
+              </label>
+            `).join('')}
+          </div>
+          <div id="quizFeedback${q.id}" class="hidden p-3 rounded-xl text-xs space-y-1"></div>
+        </div>
+      `).join('');
+    }
+
+    function checkQuizAnswers() {
+      let score = 0;
+      let allAnswered = true;
+
+      quizQuestions.forEach(q => {
+        const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+        const feedback = document.getElementById(`quizFeedback${q.id}`);
+        feedback.classList.remove('hidden');
+
+        if (!selected) {
+          allAnswered = false;
+          feedback.className = 'p-3 rounded-xl text-xs bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60';
+          feedback.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Por favor selecciona una respuesta.';
+          return;
+        }
+
+        const selectedIdx = parseInt(selected.value);
+        const isCorrect = q.options[selectedIdx].correct;
+
+        if (isCorrect) {
+          score++;
+          feedback.className = 'p-3 rounded-xl text-xs bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60';
+          feedback.innerHTML = `<b><i class="fa-solid fa-circle-check"></i> ¡Correcto!</b> ${q.explanation}`;
+        } else {
+          feedback.className = 'p-3 rounded-xl text-xs bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60';
+          feedback.innerHTML = `<b><i class="fa-solid fa-circle-xmark"></i> Incorrecto.</b> ${q.explanation}`;
+        }
+      });
+
+      if (allAnswered) {
+        const badge = document.getElementById('quizScoreBadge');
+        const text = document.getElementById('quizScoreText');
+        badge.classList.remove('hidden');
+        text.innerText = `Puntaje Obtenido: ${score} / ${quizQuestions.length}`;
+
+        if (score === quizQuestions.length) {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          showToast('¡Felicitaciones! Dominas al 100% los conceptos del caso.');
+        } else {
+          showToast(`Has completado el test con ${score}/${quizQuestions.length} aciertos.`);
+        }
+      }
+    }
+
+    function resetQuiz() {
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.querySelectorAll('[id^="quizFeedback"]').forEach(f => f.classList.add('hidden'));
+      document.getElementById('quizScoreBadge').classList.add('hidden');
+      showToast('Test reiniciado');
+    }
+
+    // 6. VIEW SWITCHER & DRAWER
+    function switchView(viewName) {
+      const views = ['story', 'network', 'roles', 'problems', 'roadmap', 'quiz', 'mermaid'];
+      views.forEach(v => {
+        const el = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      document.querySelectorAll('.view-tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-white', 'dark:bg-slate-700', 'text-emerald-600', 'dark:text-emerald-400', 'shadow-sm');
+        btn.classList.add('text-slate-600', 'dark:text-slate-300');
+      });
+
+      const activeView = document.getElementById(`view${viewName.charAt(0).toUpperCase() + viewName.slice(1)}`);
+      const activeBtn = document.getElementById(`btnView${viewName.charAt(0).toUpperCase() + viewName.slice(1)}`);
+
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'bg-white', 'dark:bg-slate-700', 'text-emerald-600', 'dark:text-emerald-400', 'shadow-sm');
+        activeBtn.classList.remove('text-slate-600', 'dark:text-slate-300');
+      }
+
+      if (viewName === 'network') {
+        if (!network) {
+          initNetwork(currentLayout);
+        } else {
+          network.fit();
+        }
+      } else if (viewName === 'roles') {
+        updateVsComparison();
+      }
+    }
+
+    function showNodeDetails(nodeId) {
+      selectedNodeId = nodeId;
+      const node = mapData.nodes.find(n => n.id === nodeId);
+      if (!node) return;
+
+      const drawer = document.getElementById('detailDrawer');
+      const title = document.getElementById('drawerTitle');
+      const subtitle = document.getElementById('drawerSubtitle');
+      const category = document.getElementById('drawerCategory');
+      const badge = document.getElementById('drawerBadge');
+      const content = document.getElementById('drawerContent');
+      const relList = document.getElementById('drawerRelationsList');
+
+      title.innerText = node.label.replace(/\n/g, ' ');
+      category.innerText = node.details?.category || 'Nodo de Información';
+
+      const catColors = {
+        central: 'bg-emerald-500',
+        styles: 'bg-sky-500',
+        agile: 'bg-cyan-500',
+        collab: 'bg-purple-500',
+        hierarch: 'bg-amber-500',
+        informal: 'bg-rose-500',
+        problem: 'bg-red-500',
+        solution: 'bg-emerald-500'
+      };
+      badge.className = `w-2.5 h-2.5 rounded-full ${catColors[node.category] || 'bg-slate-400'}`;
+
+      let html = '';
+      if (node.details) {
+        if (node.details.description) {
+          html += `<div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+            <div class="text-[11px] font-semibold text-slate-400 mb-1">Descripción:</div>
+            <p class="text-xs text-slate-700 dark:text-slate-200">${node.details.description}</p>
+          </div>`;
+        }
+
+        if (node.details.role) {
+          html += `<div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
+            <i class="fa-solid fa-user-tag text-emerald-500"></i>
+            <div><b class="text-slate-800 dark:text-slate-200">Rol Responsable:</b> ${node.details.role}</div>
+          </div>`;
+        }
+
+        if (node.details.tools) {
+          html += `<div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
+            <i class="fa-solid fa-laptop-code text-indigo-500"></i>
+            <div><b class="text-slate-800 dark:text-slate-200">Medios/Herramientas:</b> ${node.details.tools}</div>
+          </div>`;
+        }
+
+        if (node.details.advantages) {
+          html += `<div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-xs text-emerald-800 dark:text-emerald-300">
+            <div class="font-bold flex items-center gap-1.5 mb-1"><i class="fa-solid fa-circle-check"></i> Ventajas:</div>
+            <p>${node.details.advantages}</p>
+          </div>`;
+        }
+
+        if (node.details.disadvantages) {
+          html += `<div class="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-xs text-rose-800 dark:text-rose-300">
+            <div class="font-bold flex items-center gap-1.5 mb-1"><i class="fa-solid fa-triangle-exclamation"></i> Desventajas en el caso:</div>
+            <p>${node.details.disadvantages}</p>
+          </div>`;
+        }
+      }
+
+      content.innerHTML = html || '<p class="text-xs text-slate-400 italic">Haz clic en los enlaces adyacentes para explorar.</p>';
+
+      const incoming = mapData.edges.filter(e => e.to === nodeId);
+      const outgoing = mapData.edges.filter(e => e.from === nodeId);
+
+      let relHtml = '';
+      incoming.forEach(edge => {
+        const fromNode = mapData.nodes.find(n => n.id === edge.from);
+        if (fromNode) {
+          relHtml += `<button onclick="showNodeDetails('${fromNode.id}')" class="w-full text-left p-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-[11px] text-slate-600 dark:text-slate-300 flex items-center justify-between transition">
+            <span class="truncate"><span class="text-emerald-600 dark:text-emerald-400 font-mono text-[10px]">${edge.label}</span> ← ${fromNode.label.split('\n')[0]}</span>
+            <i class="fa-solid fa-chevron-right text-[9px] opacity-60"></i>
+          </button>`;
+        }
+      });
+
+      outgoing.forEach(edge => {
+        const toNode = mapData.nodes.find(n => n.id === edge.to);
+        if (toNode) {
+          relHtml += `<button onclick="showNodeDetails('${toNode.id}')" class="w-full text-left p-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-[11px] text-slate-600 dark:text-slate-300 flex items-center justify-between transition">
+            <span class="truncate"><span class="text-emerald-600 dark:text-emerald-400 font-mono text-[10px]">${edge.label}</span> → ${toNode.label.split('\n')[0]}</span>
+            <i class="fa-solid fa-chevron-right text-[9px] opacity-60"></i>
+          </button>`;
+        }
+      });
+
+      relList.innerHTML = relHtml || '<span class="text-xs text-slate-400">Sin enlaces adyacentes directos</span>';
+      drawer.classList.remove('hidden');
+    }
+
+    function closeDetailDrawer() {
+      document.getElementById('detailDrawer').classList.add('hidden');
+    }
+
+    function focusSelectedNode() {
+      if (selectedNodeId && network) {
+        network.focus(selectedNodeId, {
+          scale: 1.3,
+          animation: { duration: 700, easingFunction: 'easeInOutQuad' }
+        });
+        network.selectNodes([selectedNodeId]);
+      }
+    }
+
+    // 7. FILTERING & SEARCH
+    function filterBranch(category) {
+      activeFilter = category;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-slate-100', 'dark:bg-slate-800', 'text-slate-900', 'dark:text-white', 'border-slate-200', 'dark:border-slate-700');
+        btn.classList.add('border-transparent');
+      });
+      const activeBtn = document.querySelector(`[data-filter="${category}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'bg-slate-100', 'dark:bg-slate-800', 'text-slate-900', 'dark:text-white', 'border-slate-200', 'dark:border-slate-700');
+      }
+
+      populateGraphData();
+      if (network) network.fit({ animation: { duration: 500 } });
+    }
+
+    function handleSearch(term) {
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (term.trim().length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+        if (network) network.unselectAll();
+        return;
+      }
+
+      const q = term.toLowerCase();
+      const matchedNodeIds = mapData.nodes.filter(n => 
+        n.label.toLowerCase().includes(q) || 
+        (n.details && (
+          (n.details.description && n.details.description.toLowerCase().includes(q)) ||
+          (n.details.role && n.details.role.toLowerCase().includes(q)) ||
+          (n.details.tools && n.details.tools.toLowerCase().includes(q))
+        ))
+      ).map(n => n.id);
+
+      if (matchedNodeIds.length > 0 && network) {
+        network.selectNodes(matchedNodeIds);
+        network.focus(matchedNodeIds[0], {
+          scale: 1.15,
+          animation: { duration: 500 }
+        });
+      }
+    }
+
+    function clearSearch() {
+      document.getElementById('nodeSearch').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      if (network) network.unselectAll();
+    }
+
+    // 8. GRAPH CONTROLS & EXPORTS
+    function zoomGraph(factor) {
+      if (!network) return;
+      const currentScale = network.getScale();
+      network.moveTo({ scale: currentScale * factor, animation: { duration: 250 } });
+    }
+
+    function resetGraphView() {
+      if (network) network.fit({ animation: { duration: 500 } });
+    }
+
+    function setLayout(type) {
+      currentLayout = type;
+      initNetwork(type);
+      showToast(`Disposición cambiada a: ${type}`);
+    }
+
+    function togglePhysics() {
+      isPhysicsEnabled = !isPhysicsEnabled;
+      const btn = document.getElementById('physicsToggleBtn');
+      if (isPhysicsEnabled) {
+        network.setOptions({ physics: { enabled: true } });
+        btn.classList.add('text-emerald-600', 'bg-emerald-50');
+        btn.innerHTML = '<i class="fa-solid fa-pause text-[10px]"></i><span>Física</span>';
+        showToast('Física activada');
+      } else {
+        network.setOptions({ physics: { enabled: false } });
+        btn.classList.remove('text-emerald-600', 'bg-emerald-50');
+        btn.innerHTML = '<i class="fa-solid fa-play text-[10px]"></i><span>Física</span>';
+        showToast('Física pausada');
+      }
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      initNetwork(currentLayout);
+    }
+
+    function toggleExportMenu() {
+      document.getElementById('exportDropdown').classList.toggle('hidden');
+    }
+
+    window.addEventListener('click', function(e) {
+      const btn = document.getElementById('exportMenuBtn');
+      const drop = document.getElementById('exportDropdown');
+      if (btn && drop && !btn.contains(e.target) && !drop.contains(e.target)) {
+        drop.classList.add('hidden');
+      }
+    });
+
+    function exportGraphAsPNG() {
+      switchView('network');
+      showToast('Generando captura en alta definición...');
+      const container = document.getElementById('viewNetwork');
+      
+      html2canvas(container, {
+        backgroundColor: document.documentElement.classList.contains('dark') ? '#020617' : '#ffffff',
+        scale: 2
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'mapa_conceptual_estilos_comunicacion_sena.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('¡Imagen PNG guardada con éxito!');
+        document.getElementById('exportDropdown').classList.add('hidden');
+      }).catch(err => {
+        console.error(err);
+        showToast('Error al exportar la imagen');
+      });
+    }
+
+    function copyMermaidCode() {
+      const raw = document.getElementById('rawMermaidCode').value;
+      navigator.clipboard.writeText(raw).then(() => {
+        showToast('¡Código Mermaid copiado al portapapeles!');
+        const drop = document.getElementById('exportDropdown');
+        if (drop) drop.classList.add('hidden');
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // 9. INITIALIZATION ON DOM READY
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+      const rawCode = `graph TD
+    %% NODO CENTRAL
+    NC["<b>Comunicación en el Proyecto de Software</b><br><i>(Caso Logística)</i>"]
+
+    %% RELACIONES PRINCIPALES
+    NC -->|se divide en| R1["<b>Estilos de Comunicación Presentes</b>"]
+    NC -->|genera| R2["<b>Consecuencias del Proyecto</b><br><i>(El Problema)</i>"]
+    NC -->|requiere| R3["<b>Acciones de Mejora</b><br><i>(La Solución)</i>"]
+
+    %% SUB-RAMAS: ESTILOS
+    R1 --> E1["1. Estilo Ágil"]
+    R1 --> E2["2. Estilo Colaborativo"]
+    R1 --> E3["3. Estilo Jerárquico / Tradicional"]
+    R1 --> E4["4. Comunicación Informal / Desestructurada"]
+
+    %% DETALLES ESTILO ÁGIL
+    E1 -->|utilizado por| E1_U["Ingenieros de Software"]
+    E1 -->|práctica principal| E1_P["Reuniones Diarias (Scrum Meetings)"]
+    E1 -->|medio digital| E1_M["Comunicación verbal / Videoconferencia"]
+    E1 -->|tiene ventajas| E1_V["Ventajas: Sincronización diaria rápida"]
+    E1 -->|tiene desventajas| E1_D["Desventajas: Sin directivos, choque cultural"]
+
+    %% DETALLES ESTILO COLABORATIVO
+    E2 -->|utilizado por| E2_U["Desarrolladores"]
+    E2 -->|medios digitales| E2_M["Trello y GitHub"]
+    E2 -->|tiene ventajas| E2_V["Ventajas: Código centralizado y asíncrono"]
+    E2 -->|tiene desventajas| E2_D["Desventajas: Silos de información"]
+
+    %% DETALLES ESTILO JERÁRQUICO
+    E3 -->|utilizado por| E3_U["Directivos y Analistas de Negocio"]
+    E3 -->|práctica principal| E3_P["Exigencia de Reportes y Documentación"]
+    E3 -->|medios digitales| E3_M["Correo Electrónico y Reportes Formales"]
+    E3 -->|tiene ventajas| E3_V["Ventajas: Trazabilidad y auditoría formal"]
+    E3 -->|tiene desventajas| E3_D["Desventajas: Lento y burocrático"]
+
+    %% DETALLES COMUNICACIÓN INFORMAL
+    E4 -->|utilizado por| E4_U["Técnicos de Soporte en Campo"]
+    E4 -->|medios digitales| E4_M["WhatsApp"]
+    E4 -->|tiene ventajas| E4_V["Ventajas: Rapidez e inmediatez"]
+    E4 -->|tiene desventajas| E4_D["Desventajas: Pérdida de datos críticos"]
+
+    %% CONSECUENCIAS (EL PROBLEMA)
+    R2 -->|incluyen| C1["Retrasos en la entrega de módulos clave"]
+    R2 -->|incluyen| C2["Frustración Desarrolladores vs. Directivos"]
+    R2 -->|incluyen| C3["Dificultad de decisiones por datos dispersos"]
+
+    %% ACCIONES DE MEJORA (LA SOLUCIÓN)
+    R3 -->|acción 1| A1["Unificación de Canales de Comunicación"]
+    A1 -->|consiste en| A1_C["Reemplazar WhatsApp por tickets integrados con GitHub/Trello"]
+
+    R3 -->|acción 2| A2["Capacitación en Metodologías Ágiles"]
+    A2 -->|consiste en| A2_C["Integrar directivos a la cultura ágil"]
+
+    R3 -->|acción 3| A3["Protocolos de Reporte Automatizados"]
+    A3 -->|consiste en| A3_C["Dashboards automáticos en tiempo real"]
+
+    R3 -->|acción 4| A4["Estandarización de Requerimientos"]
+    A4 -->|consiste en| A4_C["Convertir correos en Historias de Usuario con Criterios de Aceptación"]`;
+
+      document.getElementById('rawMermaidCode').value = rawCode;
+
+      renderQuiz();
+      initNetwork('hierarchical-LR');
+    });
+  </script>
+</body>
+</html>
